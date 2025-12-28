@@ -1,9 +1,0 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
-
-@Table({ tableName: 'permissions', timestamps: false })
-export class Permission extends Model {
-  @Column(DataType.INTEGER) primaryKey!: number;
-  @Column(DataType.STRING) screen_name!: string;
-  @Column(DataType.BOOLEAN) can_view!: boolean;
-  @Column(DataType.BOOLEAN) can_edit!: boolean;
-}
