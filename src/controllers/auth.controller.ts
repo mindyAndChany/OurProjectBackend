@@ -1,0 +1,12 @@
+import { Request, Response } from 'express';
+import * as authService from '../services/auth.service.js';
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const userData = await authService.login(email, password);
+    res.json(userData);
+  } catch (err: any) {
+    res.status(401).json({ error: err.message });
+  }
+};
