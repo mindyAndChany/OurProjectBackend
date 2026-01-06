@@ -3,6 +3,7 @@ import { User } from '../models/user.model.js';
 import { Role } from '../models/role.model.js';
 import { Permission } from '../models/permission.model.js';
 import { RolePermission } from '../models/rolePermission.model.js';
+import { Student } from '../models/student.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
@@ -11,7 +12,7 @@ export const sequelize = new Sequelize({
   username: 'admin',
   password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
   database: 'edulinkdb',
-  models: [User, Role, Permission, RolePermission],
+  models: [User, Role, Permission, RolePermission,Student],
   logging: false,
   dialectOptions: {
     ssl: {

@@ -1,5 +1,5 @@
 import express from 'express';
-import * as authController from '../controllers/auth.controller.js';
+import * as authController from '../controllers/auth.controller';
 
 const router = express.Router();
 
@@ -15,15 +15,20 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
+ *             $ref: '#/components/schemas/AuthLoginRequest'
  *     responses:
  *       '200':
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthLoginResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post('/login', authController.login);
 
