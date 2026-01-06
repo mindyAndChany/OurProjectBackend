@@ -1,6 +1,6 @@
-import util from 'util';
-import { sequelize } from '../store/db.ts';
-import { User } from '../models/user.model.ts';
+import util from 'util';  
+import { sequelize } from '../store/db.js';
+import { User } from '../models/user.model.js';
 
 async function run() {
   try {

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { sequelize } from '../store/db.ts';
-import { User } from '../models/user.model.ts';
+import { sequelize } from '../store/db';
+import { User } from '../models/user.model';
 
 async function run() {
   const email = process.argv[2];

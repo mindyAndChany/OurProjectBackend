@@ -1,6 +1,7 @@
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import type { Application } from 'express';
+console.log('✅ swagger.ts LOADED');
 
 const options = {
   definition: {
@@ -91,19 +92,42 @@ const options = {
             'registration_year',
             'is_graduate'
           ]
-        }
+        },
+        CalendarEvent: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            title: { type: 'string' },
+            type: { type: 'string' },
+            date: {
+              type: 'string',
+              format: 'date'
+            },
+            time_start: {
+              type: 'string',
+              format: 'time'
+            },
+            time_end: {
+              type: 'string',
+              format: 'time'
+            },
+            notes: { type: 'string' }
+          },
+          required: ['id', 'title', 'date']
+        },
 
       },
     },
   },
-  apis: ['./src/routes/**/*.ts', './src/controllers/**/*.ts'],
+  apis: ['./dist/routes/**/*.js', './dist/controllers/**/*.js'],
 };
 
 
-
 export const swaggerSpec = swaggerJSDoc(options);
-console.log('Swagger spec paths:', Object.keys(swaggerSpec.paths || {}));
-
+console.log(
+  'Swagger spec paths:',
+  Object.keys((swaggerSpec as any).paths || {})
+);
 export default function setupSwagger(app: Application) {
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   console.log('📘 Swagger route set up at /docs');

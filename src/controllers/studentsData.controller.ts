@@ -1,7 +1,7 @@
 import { Controller, Get, Param, BadRequestException } from '@nestjs/common';
-import { getAllStudentsDataService } from '../services/getAllStudentsData.service.ts';
+import { getAllStudentsDataService } from '../services/getAllStudentsData.service.js';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { StudentDto } from './dto/student.dto.ts';
+import { StudentDto } from './dto/student.dto.js';
 
 @ApiTags('Students')
 @Controller('api/studentsData')

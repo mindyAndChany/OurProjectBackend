@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Student } from './models/student.model.ts';
-import { StudentModule } from './modules/student.module.ts';
+import { Student } from './models/student.model.js';
+import { StudentModule } from './modules/student.module.js';
+console.log('📄 app.module.ts - נבדק עכשיו');
 
 @Module({
   imports: [

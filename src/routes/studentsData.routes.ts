@@ -1,7 +1,7 @@
 import express from 'express';
-import { getAllStudentsDataService } from '../services/getAllStudentsData.service';
-import { Student } from '../models/student.model';
-import { StudentsDataController } from '../controllers/studentsData.controller';
+import { getAllStudentsDataService } from '../services/getAllStudentsData.service.js';
+import { Student } from '../models/student.model.js';
+import { StudentsDataController } from '../controllers/studentsData.controller.js';
 
 const router = express.Router();
 const studentService = new getAllStudentsDataService(Student);
