@@ -1,5 +1,12 @@
 // src/models/calendar_event.model.ts
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  AutoIncrement,
+} from 'sequelize-typescript';
 
 @Table({
   tableName: 'calendar_events',
@@ -8,34 +15,30 @@ import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement } from 'seque
 export class CalendarEvent extends Model {
   @PrimaryKey
   @AutoIncrement
-  @Column
+  @Column(DataType.INTEGER) // ✅ חובה!
   id!: number;
 
-  @Column
+  @Column(DataType.STRING) // ✅
   title!: string;
 
-  @Column
+  @Column(DataType.STRING) // ✅
   type!: string;
 
   @Column(DataType.DATEONLY)
   date!: string;
 
-@Column({
-  type: DataType.TIME,
-  allowNull: true,
-})
-time_start!: string | null;
+  @Column({
+    type: DataType.TIME,
+    allowNull: true,
+  })
+  time_start!: string | null;
 
-@Column({
-  type: DataType.TIME,
-  allowNull: true,
-})
-time_end!: string | null;
+  @Column({
+    type: DataType.TIME,
+    allowNull: true,
+  })
+  time_end!: string | null;
 
-  @Column
+  @Column(DataType.STRING) // ✅
   notes!: string;
 }
-
-
-
-
