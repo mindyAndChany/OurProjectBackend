@@ -3,6 +3,8 @@ import { GetAllStudentsDataService } from '../services/getAllStudentsData.servic
 import { AddStudentService } from '../services/AddStudent.service';
 import { Student } from '../models/student.model';
 
+import { StudentsDataController } from '../controllers/studentsData.controller.js';
+
 const router = express.Router();
 
 // יצירת מופעים של הסרביסים

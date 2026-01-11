@@ -12,7 +12,7 @@ export const sequelize = new Sequelize({
   username: 'admin',
   password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
   database: 'edulinkdb',
-  models: [User, Role, Permission, RolePermission,Student],
+  models: [User, Role, Permission, RolePermission, Student, CalendarEvent],
   logging: false,
   dialectOptions: {
     ssl: {
@@ -21,3 +21,5 @@ export const sequelize = new Sequelize({
     }
   }
 });
+import { CalendarEvent } from '../models/calendar_event.model.js';
+

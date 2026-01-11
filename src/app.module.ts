@@ -4,6 +4,8 @@ import { Student } from './models/student.model';
 import { StudentModule } from './modules/student.module';
 import { AuthModule } from './modules/auth.module';
 
+console.log('📄 app.module.ts - נבדק עכשיו');
+
 @Module({
   imports: [
     SequelizeModule.forRoot({

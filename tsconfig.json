@@ -65,8 +65,8 @@
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
     "moduleDetection": "force"
   },
   "ts-node": {

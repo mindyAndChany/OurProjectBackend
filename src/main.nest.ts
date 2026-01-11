@@ -37,6 +37,9 @@ import { AppModule } from './app.module';
 import { json, urlencoded } from 'express';
 import { Sequelize } from 'sequelize-typescript';
 
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.NEST_PORT || process.env.PORT || 5000;
