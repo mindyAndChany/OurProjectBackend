@@ -96,13 +96,13 @@ const options = {
       },
     },
   },
-  apis: ['./src/routes/**/*.ts', './src/controllers/**/*.ts'],
+  apis: ['./src/routes/**/*', './src/controllers/**/*'],
 };
 
 
 
 export const swaggerSpec = swaggerJSDoc(options);
-console.log('Swagger spec paths:', Object.keys(swaggerSpec.paths || {}));
+console.log('Swagger spec paths:', Object.keys((swaggerSpec as any).paths || {}));
 
 export default function setupSwagger(app: Application) {
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

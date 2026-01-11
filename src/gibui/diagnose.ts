@@ -13,12 +13,12 @@ async function tryImport(path: string) {
 async function run() {
   const targets = [
     './store/db.js',
-    './models/permission.model.ts',
-    './models/role.model.ts',
-    './models/user.model.ts',
-    './routes/auth.routes.ts',
-    './controllers/auth.controller.ts',
-    './services/auth.service.ts',
+    './models/permission.model',
+    './models/role.model',
+    './models/user.model',
+    './routes/auth.routes',
+    './controllers/auth.controller',
+    './services/auth.service',
   ];
 
   for (const t of targets) {

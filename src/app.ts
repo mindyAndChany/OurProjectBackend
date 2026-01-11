@@ -8,27 +8,31 @@ import { sequelize } from './store/db';
 const app = express();
 const port = process.env.PORT || 4000;
 
-app.use(express.json());
-app.use(cors());
+// ✅ הגדלת גודל ה־body
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ✅ הגדרת CORS ספציפי
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}));
 
 app.get('/', (_req, res) => res.send('Hello, World!'));
 
-// מסלולים
+// 🔀 מסלולים
 app.use('/api/auth', authRoutes);
 app.use('/api/studentsData', studentRoutes);
 
-
-
-// סוואגר
+// 📘 סוואגר
 setupSwagger(app);
 console.log('📘 Swagger setup complete');
 
-// הרצת האפליקציה
+// 🚀 הרצת האפליקציה
 sequelize.sync().then(() => {
-console.log('About to start listening...');
-
-app.listen(port, () => {
-  console.log(`🚀 Express app running on http://localhost:${port}`);
-});
-
+  console.log('About to start listening...');
+  app.listen(port, () => {
+    console.log(`🚀 Express app running on http://localhost:${port}`);
+  });
 });
