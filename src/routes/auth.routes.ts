@@ -30,6 +30,6 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/login', authController.login);
+// router.post('/login', authController.login);
 
 export default router;

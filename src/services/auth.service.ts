@@ -4,6 +4,15 @@ import { Permission } from '../models/permission.model.js';
 import { Role } from '../models/role.model.js';
 import { comparePassword } from '../utils/hash.util.js';
 
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AuthService {
+  async login(email: string, password: string) {
+    return login(email, password); // או תקרא לפונקציה הזו ישירות אם היא בקובץ הזה
+  }
+}
+
 export const login = async (email: string, password: string) => {
   const user = await User.findOne({
     where: { email, active: true },

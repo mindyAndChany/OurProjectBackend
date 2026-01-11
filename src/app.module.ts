@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Student } from './models/student.model.ts';
-import { StudentModule } from './modules/student.module.ts';
+import { Student } from './models/student.model';
+import { StudentModule } from './modules/student.module';
+import { AuthModule } from './modules/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { StudentModule } from './modules/student.module.ts';
       logging: false,
     }),
     StudentModule,
+    AuthModule
   ],
 })
 export class AppModule {}
