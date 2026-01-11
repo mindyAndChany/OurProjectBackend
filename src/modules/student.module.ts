@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Student } from '../models/student.model.ts';
-import { getAllStudentsDataService } from '../services/getAllStudentsData.service.ts';
-import { StudentsDataController } from '../controllers/studentsData.controller.ts';
+import { Student } from '../models/student.model';
+import { GetAllStudentsDataService } from '../services/getAllStudentsData.service';
+import { StudentsDataController } from '../controllers/studentsData.controller';
+import { AddStudentService } from '../services/AddStudent.service';
 
 @Module({
   imports: [SequelizeModule.forFeature([Student])],
   controllers: [StudentsDataController],
-  providers: [getAllStudentsDataService],
+  providers: [GetAllStudentsDataService,AddStudentService],
 })
-export class StudentModule {}
+export class StudentModule { 
+  constructor() {console.log('✅ StudentModule loaded');
+}
+}

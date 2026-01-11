@@ -38,11 +38,7 @@ export class Student extends Model {
   @Column(DataType.BOOLEAN)
   is_graduate!: boolean;
 
-  @Column(DataType.STRING)
-  class_kodesh!: string;
-
-  @Column(DataType.STRING)
-  class_teaching!: string;
+ 
 
   @Column(DataType.STRING)
   track!: string;
@@ -95,17 +91,20 @@ export class Student extends Model {
   @Column(DataType.STRING)
   mother_mobile_he!: string;
 
-  @Column(DataType.BOOLEAN)
-  bookshelf!: boolean;
+  @Column(DataType.STRING)
+  bookshelf!: string;
 
   @Column(DataType.BOOLEAN)
   perach!: boolean;
 
   @Column(DataType.BOOLEAN)
-  external_mother!: boolean;
+  chetz!: boolean;
 
-  @Column(DataType.BOOLEAN)
-  external_father!: boolean;
+  @Column(DataType.STRING)
+  external_mother!: string;
+
+  @Column(DataType.STRING)
+  external_father!: string;
 
   @Column(DataType.STRING)
   birth_country!: string;
@@ -118,4 +117,10 @@ export class Student extends Model {
 
   @Column(DataType.STRING)
   serial_number!: string;
+
+  @Column(DataType.STRING)
+  payment_method!: string;
+
+  @Column(DataType.STRING)
+  trend!: string;
 }

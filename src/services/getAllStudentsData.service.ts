@@ -8,22 +8,31 @@ import { FindOptions } from 'sequelize'; // ודא שזה מיובא
 type SortSpec = Array<{ column: string; direction?: 'ASC' | 'DESC' }>;
 
 @Injectable()
-export class getAllStudentsDataService {
+export class GetAllStudentsDataService {
   constructor(
     @InjectModel(Student)
     private studentModel: typeof Student,
-  ) {}
+  ) {
+    console.log('✅ GetAllStudentsDataService initialized');
+  }
+
+
 
   async findAll(): Promise<Student[]> {
     return this.studentModel.findAll();
   }
 
+  // קבלת שדות ספציפיים עבור כל התלמידים
   async getStudentData(cols: string[]) {
-    const allowed = [
-      'id', 'first_name', 'last_name', 'id_number', 'phone', 'marital_status', 'address',
-      'registration_year', 'is_graduate', 'class_kodesh', 'class_teaching', 'track', 'track2', 'track3',
-      'payment_status', 'paid_amount', 'birthdate_gregorian', 'birthdate_hebrew', 'married_date', 'married_name', 'notes', 'institution_code', 'email'
-    ];
+  const allowed = [
+  'id', 'first_name', 'last_name', 'id_number', 'phone', 'marital_status', 'address',
+  'registration_year', 'is_graduate', 'class_kodesh', 'class_teaching', 'track', 'track2', 'track3',
+  'payment_status', 'paid_amount', 'birthdate_gregorian', 'birthdate_hebrew', 'married_date', 'married_name', 'notes',
+  'institution_code', 'email', 'serial_number', 'nickname', 'zipcode', 'father_name_he', 'father_mobile_he',
+  'mother_name_he', 'bookshelf', 'perach', 'external_mother', 'external_father', 'birth_country',
+  'personal_mobile', 'trend', 'chetz', 'payment_method'
+];
+
 
     const attrs = cols.filter(c => allowed.includes(c));
     if (attrs.length === 0) throw new BadRequestException('no valid categories');
@@ -32,12 +41,19 @@ export class getAllStudentsDataService {
     return rows.map(r => r.get({ plain: true }));
   }
 
+
+
+  //קיבוץ לפי שדה מסוים
   async groupBy(opts: { groupBy: string; fields?: string[]; sort?: SortSpec }) {
-    const allowed = [
-      'id', 'first_name', 'last_name', 'id_number', 'phone', 'marital_status', 'address',
-      'registration_year', 'is_graduate', 'class_kodesh', 'class_teaching', 'track', 'track2', 'track3',
-      'payment_status', 'paid_amount', 'birthdate_gregorian', 'birthdate_hebrew', 'married_date', 'married_name', 'notes'
-    ];
+   const allowed = [
+  'id', 'first_name', 'last_name', 'id_number', 'phone', 'marital_status', 'address',
+  'registration_year', 'is_graduate', 'class_kodesh', 'class_teaching', 'track', 'track2', 'track3',
+  'payment_status', 'paid_amount', 'birthdate_gregorian', 'birthdate_hebrew', 'married_date', 'married_name', 'notes',
+  'institution_code', 'email', 'serial_number', 'nickname', 'zipcode', 'father_name_he', 'father_mobile_he',
+  'mother_name_he', 'bookshelf', 'perach', 'external_mother', 'external_father', 'birth_country',
+  'personal_mobile', 'trend', 'chetz', 'payment_method'
+];
+
 
     const { groupBy, fields, sort } = opts;
     if (!groupBy || !allowed.includes(groupBy)) {
