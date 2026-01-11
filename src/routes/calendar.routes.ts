@@ -1,7 +1,9 @@
 // src/routes/calendar.routes.ts
 import { Router } from 'express';
 import { getCalendarEventsHandler,
-      addCalendarEventHandler
+      addCalendarEventHandler,
+        updateCalendarEventHandler,
+        deleteCalendarEventHandler
  } from '../controllers/calendar.controller.js';
 
 const router = Router();
@@ -50,5 +52,45 @@ router.get('/', getCalendarEventsHandler);
  */
 router.post('/', addCalendarEventHandler);
 
+// עדכון אירוע לפי מזהה
+/**
+ * @openapi
+ * /api/calendar-events/{id}:
+ *   put:
+ *     summary: Update calendar event
+ *     tags:
+ *       - Calendar
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Event updated
+ *
+ *   delete:
+ *     summary: Delete calendar event
+ *     tags:
+ *       - Calendar
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Event deleted
+ */
+router.put('/:id', updateCalendarEventHandler);
+router.delete('/:id', deleteCalendarEventHandler);
 
-export default router;
+export default router;  

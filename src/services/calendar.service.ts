@@ -31,3 +31,31 @@ export const addEvent = async (eventData: {
 
   return await CalendarEvent.create(cleanData);
 };
+export const updateEventById = async (
+  id: number,
+  eventData: Partial<{
+    title: string;
+    type: string;
+    date: string;
+    time_start?: string;
+    time_end?: string;
+    notes?: string;
+  }>
+) => {
+  const event = await CalendarEvent.findByPk(id);
+  if (!event) return null;
+
+  const cleanData = {
+    ...eventData,
+    time_start: eventData.time_start?.trim() ?? event.time_start,
+    time_end: eventData.time_end?.trim() ?? event.time_end,
+  };
+
+  await event.update(cleanData);
+  return event;
+};
+
+export const deleteEventById = async (id: number) => {
+  const deleted = await CalendarEvent.destroy({ where: { id } });
+  return deleted > 0;
+};
