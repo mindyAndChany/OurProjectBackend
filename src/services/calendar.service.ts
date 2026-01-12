@@ -5,16 +5,7 @@ export const getEvents = async () => {
   const events = await CalendarEvent.findAll();
   return events;
 };
-// export const addEvent = async (eventData: {
-//   title: string;
-//   type: string;
-//   date: string;
-//   time_start: string;
-//   time_end: string;
-//   notes?: string;
-// }) => {
-//   return await CalendarEvent.create(eventData);
-// };
+
 export const addEvent = async (eventData: {
   title: string;
   type: string;
