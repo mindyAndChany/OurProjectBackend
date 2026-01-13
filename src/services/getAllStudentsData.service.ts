@@ -34,11 +34,17 @@ export class GetAllStudentsDataService {
 ];
 
 
-    const attrs = cols.filter(c => allowed.includes(c));
-    if (attrs.length === 0) throw new BadRequestException('no valid categories');
+    const modelAttrs = Object.keys(this.studentModel.rawAttributes || {});
+    const attrs = cols.filter(c => allowed.includes(c) && modelAttrs.includes(c));
+    if (attrs.length === 0) {
+      console.warn('No valid categories requested or not present in model. requested:', cols, 'modelAttrs:', modelAttrs);
+      throw new BadRequestException('no valid categories');
+    }
 
     const rows = await this.studentModel.findAll({ attributes: attrs });
-    return rows.map(r => r.get({ plain: true }));
+    const plainRows = rows.map(r => r.get({ plain: true }));
+    console.log('getStudentData - attrs:', attrs, 'sample:', plainRows.slice(0,5));
+    return plainRows; 
   }
 
 
@@ -56,15 +62,18 @@ export class GetAllStudentsDataService {
 
 
     const { groupBy, fields, sort } = opts;
-    if (!groupBy || !allowed.includes(groupBy)) {
+    const modelAttrs = Object.keys(this.studentModel.rawAttributes || {});
+    if (!groupBy || !allowed.includes(groupBy) || !modelAttrs.includes(groupBy)) {
+      console.warn('Invalid or unknown groupBy column:', groupBy, 'modelAttrs:', modelAttrs);
       throw new BadRequestException('Invalid groupBy column');
     }
 
-    const attributes = fields && fields.length ? fields.filter(f => allowed.includes(f)) : undefined;
+    const attributes = fields && fields.length ? fields.filter(f => allowed.includes(f) && modelAttrs.includes(f)) : undefined;
     const order: Order | undefined = sort && sort.length ? sort.map(s => [s.column, (s.direction || 'ASC')] as const) : undefined;
 const options: FindOptions = {};
 if (attributes !== undefined) options.attributes = attributes;
 if (order !== undefined) options.order = order;
+console.log('groupBy - options:', options, 'groupBy:', groupBy);
 
     const rows = await this.studentModel.findAll(options);
 
