@@ -52,6 +52,17 @@ async function bootstrap() {
     origin: 'http://localhost:3000',
   });
 
+  // // Setup Swagger
+  // const config = new DocumentBuilder()
+  //   .setTitle('OurProject API')
+  //   .setDescription('API docs')
+  //   .setVersion('1.0')
+  //   .build();
+  // console.log('📘 Creating swagger document...');
+  // const document = SwaggerModule.createDocument(app, config);
+  // console.log('Schemas:', Object.keys(document.components?.schemas || {}));
+  // SwaggerModule.setup('docs', app, document);
+
   // Ensure students id sequence doesn't conflict with existing rows (fix for duplicate PK on insert)
   try {
     const sequelize = app.get(Sequelize);

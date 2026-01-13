@@ -115,11 +115,58 @@ const options = {
           },
           required: ['id', 'title', 'date']
         },
+        Course: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            name: { type: 'string' },
+            type: { type: 'string' }
+          },
+          required: ['id', 'name', 'type']
+        },
+        Class: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            course_id: { type: 'integer' },
+            name: { type: 'string' },
+            year: { type: 'integer' },
+            teacher_name: { type: 'string' },
+            base_schedule: { type: 'string' }
+          },
+          required: ['id', 'course_id', 'name']
+        },
+        WeeklySchedule: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            class_id: { type: 'integer' },
+            day_of_week: { type: 'string' },
+            start_time: { type: 'string' },
+            end_time: { type: 'string' },
+            topic: { type: 'string' },
+            teacher_name: { type: 'string' }
+          },
+          required: ['id', 'class_id', 'day_of_week', 'start_time', 'end_time']
+        },
+        Lesson: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            class_id: { type: 'integer' },
+            date: { type: 'string', format: 'date' },
+            start_time: { type: 'string' },
+            end_time: { type: 'string' },
+            topic: { type: 'string' },
+            teacher_name: { type: 'string' }
+          },
+          required: ['id', 'class_id', 'date', 'start_time', 'end_time']
+        },
 
       },
     },
   },
-  apis: ['./src/routes/**/*', './src/controllers/**/*'],
+  apis: ['./src/routes/**/*.ts', './src/controllers/**/*.ts'],
   // apis: ['./dist/routes/**/*.js', './dist/controllers/**/*.js'],
 };
 

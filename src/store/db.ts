@@ -4,6 +4,11 @@ import { Role } from '../models/role.model.js';
 import { Permission } from '../models/permission.model.js';
 import { RolePermission } from '../models/rolePermission.model.js';
 import { Student } from '../models/student.model.js';
+import { CalendarEvent } from '../models/calendar_event.model.js';
+import { Course } from '../models/course.model.js';
+import { ClassModel } from '../models/class.model.js';
+import { WeeklySchedule } from '../models/weekly_schedule.model.js';
+import { Lesson } from '../models/lesson.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
@@ -12,7 +17,7 @@ export const sequelize = new Sequelize({
   username: 'admin',
   password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
   database: 'edulinkdb',
-  models: [User, Role, Permission, RolePermission, Student, CalendarEvent],
+  models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson],
   logging: false,
   dialectOptions: {
     ssl: {
@@ -21,5 +26,4 @@ export const sequelize = new Sequelize({
     }
   }
 });
-import { CalendarEvent } from '../models/calendar_event.model.js';
 

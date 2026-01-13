@@ -5,6 +5,10 @@ import authRoutes from './routes/auth.routes.js';
 import studentRoutes from './routes/studentsData.routes.js';
 import { sequelize } from './store/db.js';
 import calendarRoutes from './routes/calendar.routes.js'; // או .ts אם בתוך src
+import coursesRoutes from './routes/courses.routes.js';
+import classesRoutes from './routes/classes.routes.js';
+import weeklySchedulesRoutes from './routes/weeklySchedules.routes.js';
+import lessonsRoutes from './routes/lessons.routes.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -26,6 +30,10 @@ app.get('/', (_req, res) => res.send('Hello, World!'));
 app.use('/api/auth', authRoutes);
 app.use('/api/studentsData', studentRoutes);
 app.use('/api/calendar-events', calendarRoutes);
+app.use('/api/courses', coursesRoutes);
+app.use('/api/classes', classesRoutes);
+app.use('/api/weekly-schedules', weeklySchedulesRoutes);
+app.use('/api/lessons', lessonsRoutes);
 
 // 📘 סוואגר
 
