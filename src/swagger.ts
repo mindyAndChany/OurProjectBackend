@@ -157,7 +157,9 @@ const options = {
             start_time: { type: 'string' },
             end_time: { type: 'string' },
             topic: { type: 'string' },
-            teacher_name: { type: 'string' }
+            teacher_name: { type: 'string' },
+            is_cancelled: { type: 'boolean', default: false, description: 'האם השיעור בוטל' },
+            cancellation_reason: { type: 'string', description: 'סיבת הביטול' }
           },
           required: ['id', 'class_id', 'date', 'start_time', 'end_time']
         },
