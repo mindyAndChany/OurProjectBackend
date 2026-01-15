@@ -18,6 +18,7 @@ export const sequelize = new Sequelize({
   password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
   database: 'edulinkdb',
   models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson],
+  // Disable query logging for cleaner output
   logging: false,
   dialectOptions: {
     ssl: {

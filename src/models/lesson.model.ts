@@ -24,4 +24,10 @@ export class Lesson extends Model {
 
   @Column(DataType.STRING)
   teacher_name!: string;
+
+  @Column(DataType.BOOLEAN)
+  is_cancelled!: boolean;
+
+  @Column(DataType.TEXT)
+  cancellation_reason?: string;
 }
