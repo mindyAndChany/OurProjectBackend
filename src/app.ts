@@ -4,7 +4,7 @@ import setupSwagger from './swagger.js';
 import authRoutes from './routes/auth.routes.js';
 import studentRoutes from './routes/studentsData.routes.js';
 import { sequelize } from './store/db.js';
-import calendarRoutes from './routes/calendar.routes.js'; // או .ts אם בתוך src
+import calendarRoutes from './routes/calendar.routes.js'; 
 import coursesRoutes from './routes/courses.routes.js';
 import classesRoutes from './routes/classes.routes.js';
 import weeklySchedulesRoutes from './routes/weeklySchedules.routes.js';
