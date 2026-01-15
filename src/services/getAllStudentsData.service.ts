@@ -12,9 +12,7 @@ export class GetAllStudentsDataService {
   constructor(
     @InjectModel(Student)
     private studentModel: typeof Student,
-  ) {
-    console.log('✅ GetAllStudentsDataService initialized');
-  }
+  ) {}
 
 
 
@@ -37,13 +35,11 @@ export class GetAllStudentsDataService {
     const modelAttrs = Object.keys(this.studentModel.rawAttributes || {});
     const attrs = cols.filter(c => allowed.includes(c) && modelAttrs.includes(c));
     if (attrs.length === 0) {
-      console.warn('No valid categories requested or not present in model. requested:', cols, 'modelAttrs:', modelAttrs);
       throw new BadRequestException('no valid categories');
     }
 
     const rows = await this.studentModel.findAll({ attributes: attrs });
     const plainRows = rows.map(r => r.get({ plain: true }));
-    console.log('getStudentData - attrs:', attrs, 'sample:', plainRows.slice(0,5));
     return plainRows; 
   }
 
@@ -64,7 +60,6 @@ export class GetAllStudentsDataService {
     const { groupBy, fields, sort } = opts;
     const modelAttrs = Object.keys(this.studentModel.rawAttributes || {});
     if (!groupBy || !allowed.includes(groupBy) || !modelAttrs.includes(groupBy)) {
-      console.warn('Invalid or unknown groupBy column:', groupBy, 'modelAttrs:', modelAttrs);
       throw new BadRequestException('Invalid groupBy column');
     }
 
@@ -73,7 +68,6 @@ export class GetAllStudentsDataService {
 const options: FindOptions = {};
 if (attributes !== undefined) options.attributes = attributes;
 if (order !== undefined) options.order = order;
-console.log('groupBy - options:', options, 'groupBy:', groupBy);
 
     const rows = await this.studentModel.findAll(options);
 
