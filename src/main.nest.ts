@@ -62,7 +62,10 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'https://edulink-xn9f.onrender.com',
+    ],
   });
 
   // // Setup Swagger

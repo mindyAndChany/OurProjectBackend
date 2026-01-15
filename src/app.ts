@@ -19,7 +19,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ✅ הגדרת CORS ספציפי
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'https://edulink-xn9f.onrender.com',
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type']
 }));
