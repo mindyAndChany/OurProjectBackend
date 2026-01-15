@@ -39,6 +39,19 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
+// Global diagnostic handlers to capture unexpected runtime exits
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception (global):', err && (err.stack || err.message || err));
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection (global):', reason);
+});
+process.on('exit', (code) => {
+  console.warn('Process exit event fired with code:', code);
+});
+process.on('beforeExit', (code) => {
+  console.warn('Process beforeExit event fired with code:', code);
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

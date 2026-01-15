@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 
-@Table({ tableName: 'weekly_schedules', timestamps: false })
+// Point to existing table in DB (PGAdmin shows it is named weekly_schedule)
+@Table({ tableName: 'weekly_schedule', timestamps: false })
 export class WeeklySchedule extends Model {
   @PrimaryKey
   @AutoIncrement
@@ -10,18 +11,16 @@ export class WeeklySchedule extends Model {
   @Column(DataType.INTEGER)
   class_id!: number;
 
-  @Column(DataType.STRING)
-  day_of_week!: string; // or numeric representation
+  // DB column is integer (1-7). Use INTEGER to avoid select errors.
+  @Column(DataType.INTEGER)
+  day_of_week!: number;
 
-  @Column(DataType.STRING)
+  @Column(DataType.TIME)
   start_time!: string;
 
-  @Column(DataType.STRING)
+  @Column(DataType.TIME)
   end_time!: string;
 
   @Column(DataType.STRING)
   topic!: string;
-
-  @Column(DataType.STRING)
-  teacher_name!: string;
 }

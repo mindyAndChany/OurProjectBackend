@@ -1,7 +1,8 @@
-import { Controller, Get, Param, BadRequestException, Post, Body, Inject } from '@nestjs/common';
-import { GetAllStudentsDataService } from '../services/getAllStudentsData.service';
-import { AddStudentService } from '../services/AddStudent.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Param, BadRequestException, Post, Body, Inject, Put } from '@nestjs/common';
+import { GetAllStudentsDataService } from '../services/getAllStudentsData.service.js';
+import { AddStudentService } from '../services/AddStudent.service.js';
+import { UpdateStudentService } from '../services/UpdateStudent.service.js';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { StudentDto } from './dto/student.dto';
 
 
@@ -12,10 +13,9 @@ export class StudentsDataController {
   constructor(
     @Inject(GetAllStudentsDataService) private readonly service: GetAllStudentsDataService,
     @Inject(AddStudentService) private readonly addStudentService: AddStudentService,
+    @Inject(UpdateStudentService) private readonly updateStudentService: UpdateStudentService,
   ) {
-    console.log('SERVICE CLASS TYPE:', service ? service.constructor?.name : '<<undefined>>');
-    console.log('SERVICE CLASS TYPE:', addStudentService ? addStudentService.constructor?.name : '<<undefined>>');
-    console.log('SERVICE typeof:', typeof service, 'ADD_SERVICE typeof:', typeof addStudentService);
+   
   }
 
   //קבלת נתונים בסיסיים של כל התלמידים
@@ -41,7 +41,7 @@ export class StudentsDataController {
   @ApiResponse({ status: 200, description: 'Array of students with requested fields', type: () => StudentDto, isArray: true })
   @ApiResponse({ status: 400, description: 'Bad request (invalid or no categories)' })
   async getStudentData(@Param('categories') categories: string) {
-    console.log('SERVICE IS:', this.service);
+    // console.log('SERVICE IS:', this.service);
 
     if (!categories) throw new BadRequestException('categories parameter required');
     // categories are comma-separated field names
@@ -66,6 +66,18 @@ export class StudentsDataController {
     }
 
     return results;
+  }
+
+  // עדכון תלמיד לפי מספר זהות (id_number)
+  @Put('updateStudent/:id')
+  @ApiOperation({ summary: 'Update a student by id_number' })
+  @ApiParam({ name: 'id', description: 'Student id_number' })
+  @ApiBody({ schema: { type: 'object', additionalProperties: true } })
+  @ApiResponse({ status: 200, description: 'Updated student object', type: () => StudentDto })
+  @ApiResponse({ status: 400, description: 'Invalid input' })
+  @ApiResponse({ status: 404, description: 'Student not found' })
+  async updateStudent(@Param('id') id: string, @Body() body: Record<string, any>) {
+    return this.updateStudentService.updateByIdNumber(id, body);
   }
 }
 

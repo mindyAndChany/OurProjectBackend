@@ -6,6 +6,7 @@ export const getWeeklySchedulesHandler = async (_req: Request, res: Response) =>
     const items = await getWeeklySchedules();
     res.json(items);
   } catch (error) {
+    console.error('Failed to fetch weekly schedules:', error);
     res.status(500).json({ error: 'Failed to fetch weekly schedules' });
   }
 };

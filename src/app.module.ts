@@ -12,7 +12,6 @@ import { ClassesModule } from './modules/classes.module';
 import { WeeklySchedulesModule } from './modules/weeklySchedules.module';
 import { LessonsModule } from './modules/lessons.module';
 
-console.log('📄 app.module.ts - נבדק עכשיו');
 
 @Module({
   imports: [

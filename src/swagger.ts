@@ -1,7 +1,6 @@
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import type { Application } from 'express';
-console.log('✅ swagger.ts LOADED');
 
 const options = {
   definition: {
@@ -172,14 +171,7 @@ const options = {
 
 
 export const swaggerSpec = swaggerJSDoc(options);
-console.log('Swagger spec paths:', Object.keys((swaggerSpec as any).paths || {}));
 
-console.log(
-  'Swagger spec paths:',
-  Object.keys((swaggerSpec as any).paths || {})
-);
 export default function setupSwagger(app: Application) {
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log('📘 Swagger route set up at /docs');
-
 }
