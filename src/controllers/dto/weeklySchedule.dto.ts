@@ -7,5 +7,5 @@ export class WeeklyScheduleDto {
   @ApiProperty() start_time!: string;
   @ApiProperty() end_time!: string;
   @ApiProperty({ required: false }) topic?: string;
-  @ApiProperty({ required: false }) teacher_name?: string;
+  // @ApiProperty({ required: false }) teacher_name?: string;
 }

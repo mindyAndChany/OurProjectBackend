@@ -8,7 +8,7 @@ export const getLessonById = async (id: number) => {
   return await Lesson.findByPk(id);
 };
 
-export const addLesson = async (data: { class_id: number; date: Date | string; start_time: string; end_time: string; topic?: string; teacher_name?: string; is_cancelled?: boolean; cancellation_reason?: string }) => {
+export const addLesson = async (data: { class_id: number; date: Date | string; start_time: string; end_time: string; topic?: string;  is_cancelled?: boolean; cancellation_reason?: string }) => {
   const clean = {
     ...data,
     date: data.date ? new Date(data.date) : null,
@@ -16,7 +16,7 @@ export const addLesson = async (data: { class_id: number; date: Date | string; s
   return await Lesson.create(clean as any);
 };
 
-export const updateLessonById = async (id: number, data: Partial<{ class_id: number; date: Date | string; start_time: string; end_time: string; topic?: string; teacher_name?: string; is_cancelled?: boolean; cancellation_reason?: string }>) => {
+export const updateLessonById = async (id: number, data: Partial<{ class_id: number; date: Date | string; start_time: string; end_time: string; topic?: string; is_cancelled?: boolean; cancellation_reason?: string }>) => {
   const item = await Lesson.findByPk(id);
   if (!item) return null;
   const clean = { ...data } as any;

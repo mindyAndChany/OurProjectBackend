@@ -14,12 +14,12 @@ export class LessonsService {
     return this.model.findByPk(id);
   }
 
-  async create(data: { class_id: number; date: string | Date; start_time: string; end_time: string; topic?: string; teacher_name?: string }) {
+  async create(data: { class_id: number; date: string | Date; start_time: string; end_time: string; topic?: string }) {
     const clean = { ...data, date: data.date ? new Date(data.date) : null } as any;
     return this.model.create(clean);
   }
 
-  async update(id: number, data: Partial<{ class_id: number; date: string | Date; start_time: string; end_time: string; topic?: string; teacher_name?: string }>) {
+  async update(id: number, data: Partial<{ class_id: number; date: string | Date; start_time: string; end_time: string; topic?: string }>) {
     const item = await this.model.findByPk(id);
     if (!item) throw new NotFoundException('Lesson not found');
     const clean = { ...data } as any;
