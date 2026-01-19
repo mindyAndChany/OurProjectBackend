@@ -14,11 +14,11 @@ export class WeeklySchedulesService {
     return this.model.findByPk(id);
   }
 
-  async create(data: { class_id: number; day_of_week: string; start_time: string; end_time: string; topic?: string; teacher_name?: string }) {
+  async create(data: { class_id: number; day_of_week: string; start_time: string; end_time: string; topic?: string; }) {
     return this.model.create(data as any);
   }
 
-  async update(id: number, data: Partial<{ class_id: number; day_of_week: string; start_time: string; end_time: string; topic?: string; teacher_name?: string }>) {
+  async update(id: number, data: Partial<{ class_id: number; day_of_week: string; start_time: string; end_time: string; topic?: string; }>) {
     const item = await this.model.findByPk(id);
     if (!item) throw new NotFoundException('Weekly schedule not found');
     await item.update(data);

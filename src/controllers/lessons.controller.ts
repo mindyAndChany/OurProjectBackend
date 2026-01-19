@@ -15,7 +15,8 @@ export const addLessonHandler = async (req: Request, res: Response) => {
     const item = await addLesson(req.body);
     res.status(201).json(item);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to add lesson' });
+    console.error('Error adding lesson:', error);
+    res.status(500).json({ error: 'Failed to add lesson', details: error instanceof Error ? error.message : String(error) });
   }
 };
 
