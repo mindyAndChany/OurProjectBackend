@@ -5,6 +5,7 @@ import { UpdateStudentService } from '../services/UpdateStudent.service.js';
 import { Student } from '../models/student.model.js';
 
 import { StudentsDataController } from '../controllers/studentsData.controller.js';
+import { GetStudentByIdService } from '../services/getStudentById.service.js';
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ const router = express.Router();
 const studentService = new GetAllStudentsDataService(Student);
 const addStudentService = new AddStudentService(Student);
 const updateStudentService = new UpdateStudentService(Student);
+const getStudentByIdService = new GetStudentByIdService(Student);
 
 /**
  * @openapi
@@ -79,7 +81,40 @@ router.get('/getstudentData/:categories', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+/**
+ * @openapi
+ * /api/studentsData/getstudentById/{id}:
+ *   get:
+ *     summary: Get full student by id_number
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Student id_number
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Full student object
+ *       404:
+ *         description: Student not found
+ */
+router.get('/getstudentById/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ error: 'id parameter required' });
 
+    const student = await getStudentByIdService.getByIdNumber(id);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+
+    res.json(student);
+  } catch (err) {
+    console.error('getstudentById error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 /**
  * @openapi
  * /api/studentsData/addStudents:

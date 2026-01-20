@@ -4,6 +4,7 @@ import { AddStudentService } from '../services/AddStudent.service.js';
 import { UpdateStudentService } from '../services/UpdateStudent.service.js';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { StudentDto } from './dto/student.dto';
+import { GetStudentByIdService } from '../services/getStudentById.service.js';
 
 
 
@@ -14,6 +15,8 @@ export class StudentsDataController {
     @Inject(GetAllStudentsDataService) private readonly service: GetAllStudentsDataService,
     @Inject(AddStudentService) private readonly addStudentService: AddStudentService,
     @Inject(UpdateStudentService) private readonly updateStudentService: UpdateStudentService,
+    @Inject(GetStudentByIdService) private readonly getStudentByIdService: GetStudentByIdService, // ← חדש
+
   ) {
    
   }
@@ -49,7 +52,18 @@ export class StudentsDataController {
     if (cols.length === 0) throw new BadRequestException('no categories provided');
     return this.service.getStudentData(cols);
   }
-
+@Get('getstudentById/:id')
+@ApiOperation({ summary: 'Get full student by id_number' })
+@ApiParam({ name: 'id', description: 'Student id_number' })
+@ApiResponse({ status: 200, description: 'Full student object', type: () => StudentDto })
+@ApiResponse({ status: 404, description: 'Student not found' })
+async getStudentById(@Param('id') id: string) {
+  const student = await this.getStudentByIdService.getByIdNumber(id);
+  if (!student) {
+    throw new BadRequestException('Student not found');
+  }
+  return student;
+}
      // ✅ פונקציה להוספת **מערך** תלמידים
   @Post('addStudents')
   @ApiOperation({ summary: 'Add multiple students to the database' })
