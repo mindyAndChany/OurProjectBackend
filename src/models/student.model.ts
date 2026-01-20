@@ -24,7 +24,10 @@ export class Student extends Model {
   id_number!: string;
 
   @Column(DataType.STRING)
-  phone!: string;
+  phone!: string; 
+  
+  @Column(DataType.STRING)
+  class_kodesh!: string;
 
   @Column(DataType.STRING)
   marital_status!: string;
