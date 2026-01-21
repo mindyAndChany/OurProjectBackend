@@ -9,6 +9,7 @@ import coursesRoutes from './routes/courses.routes.js';
 import classesRoutes from './routes/classes.routes.js';
 import weeklySchedulesRoutes from './routes/weeklySchedules.routes.js';
 import lessonsRoutes from './routes/lessons.routes.js';
+import attendanceRoutes from './routes/attendance.routes.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -37,6 +38,7 @@ app.use('/api/courses', coursesRoutes);
 app.use('/api/classes', classesRoutes);
 app.use('/api/weekly-schedules', weeklySchedulesRoutes);
 app.use('/api/lessons', lessonsRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 // 📘 סוואגר
 

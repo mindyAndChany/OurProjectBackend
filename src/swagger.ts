@@ -164,6 +164,20 @@ const options = {
           required: ['id', 'class_id', 'date', 'start_time', 'end_time']
         },
 
+        Attendance: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            student_id: { type: 'integer' },
+            lesson_id: { type: 'integer' },
+            status: {
+              type: 'string',
+              enum: ['present', 'late', 'absent', 'approved absent']
+            }
+          },
+          required: ['id', 'student_id', 'lesson_id', 'status']
+        },
+
       },
     },
   },
