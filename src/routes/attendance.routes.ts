@@ -5,6 +5,8 @@ import {
   createAttendanceHandler,
   updateAttendanceHandler,
   deleteAttendanceHandler,
+  getAttendanceListByLessonHandler,
+  getAttendanceListByStudentHandler,
 } from '../controllers/attendance.controller.js';
 
 /**
@@ -93,9 +95,55 @@ import {
  *       404:
  *         description: Attendance not found
  */
+
+/**
+ * @openapi
+ * /api/attendance/getByLesson/{lessonId}:
+ *   get:
+ *     summary: Get attendance by lesson ID
+ *     tags:
+ *       - Attendance
+ *     parameters:
+ *       - in: path
+ *         name: lessonId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of attendance for the lesson
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Attendance'
+ * /api/attendance/getByStudent/{studentId}:
+ *   get:
+ *     summary: Get attendance by student ID
+ *     tags:
+ *       - Attendance
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of attendance for the student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Attendance'
+ */
 const router = Router();
 
 router.get('/', getAttendanceListHandler);
+router.get('/getByLesson/:lessonId', getAttendanceListByLessonHandler);
+router.get('/getByStudent/:studentId', getAttendanceListByStudentHandler);
 router.post('/', createAttendanceHandler);
 router.get('/:id', getAttendanceByIdHandler);
 router.put('/:id', updateAttendanceHandler);

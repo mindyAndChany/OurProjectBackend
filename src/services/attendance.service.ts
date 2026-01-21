@@ -4,6 +4,22 @@ export const getAllAttendance = async () => {
   return await Attendance.findAll();
 };
 
+export const getAllAttendanceByStudent = async (studentId:number) => {
+return await Attendance.findAll({
+  where: {
+    student_id: studentId
+  }
+});
+};
+
+export const getAllAttendanceByLesson = async (lesson_id:number) => {
+  return await Attendance.findAll({
+  where: {
+    lesson_id: lesson_id
+  }
+});
+};
+
 export const getAttendanceById = async (id: number) => {
   return await Attendance.findByPk(id);
 };
