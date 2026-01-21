@@ -51,9 +51,25 @@ export const getAttendanceByIdHandler = async (req: Request, res: Response) => {
 
 export const createAttendanceHandler = async (req: Request, res: Response) => {
     try {
-        const item = await createAttendance(req.body);
+        // Support both snake_case and camelCase fields from clients
+        const body: any = req.body as any;
+        const studentIdentifier = body.student_id ?? body.studentId ?? body.student_identifier ?? body.studentIdNumber ?? body.id_number;
+        const lessonIdentifier = body.lesson_id ?? body.lessonId;
+        const payload = {
+            student_id: studentIdentifier,
+            lesson_id: Number(lessonIdentifier),
+            status: body.status as 'present' | 'late' | 'absent' | 'approved absent',
+        };
+        const item = await createAttendance(payload as any);
         res.status(201).json(item);
     } catch (error) {
+        // Minimal logging for diagnostics without leaking sensitive data
+        // eslint-disable-next-line no-console
+        console.error('Failed to create attendance:', error);
+        const message = (error as Error)?.message ?? '';
+        if (message.includes('Student not found')) {
+            return res.status(400).json({ error: 'Student not found for provided identifier' });
+        }
         res.status(500).json({ error: 'Failed to create attendance' });
     }
 };

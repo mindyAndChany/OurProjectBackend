@@ -10,8 +10,8 @@ export class Attendance extends Model {
   id!: number;
 
   @ForeignKey(() => Student)
-  @Column(DataType.INTEGER)
-  student_id!: number;
+  @Column(DataType.STRING)
+  student_id!: string;
 
   @BelongsTo(() => Student)
   student?: Student;
