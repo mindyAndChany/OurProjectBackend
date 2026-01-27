@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { ClassModel } from './class.model.js';
+import { Topic } from './topic.model.js';
 
 @Table({ tableName: 'lessons', timestamps: false })
 export class Lesson extends Model {
@@ -35,4 +36,12 @@ export class Lesson extends Model {
 
   @Column(DataType.TEXT)
   cancellation_reason?: string;
+
+  // New FK to topics table; kept optional during migration phase
+  @ForeignKey(() => Topic)
+  @Column(DataType.INTEGER)
+  topic_id?: number;
+
+  @BelongsTo(() => Topic)
+  topicRef?: Topic;
 }

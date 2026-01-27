@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Topic } from './topic.model.js';
 
 // Point to existing table in DB (PGAdmin shows it is named weekly_schedule)
 @Table({ tableName: 'weekly_schedule', timestamps: false })
@@ -23,4 +24,12 @@ export class WeeklySchedule extends Model {
 
   @Column(DataType.STRING)
   topic!: string;
+
+  // New FK to topics table; kept optional during migration phase
+  @ForeignKey(() => Topic)
+  @Column(DataType.INTEGER)
+  topic_id?: number;
+
+  @BelongsTo(() => Topic)
+  topicRef?: Topic;
 }

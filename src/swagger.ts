@@ -140,10 +140,11 @@ const options = {
           properties: {
             id: { type: 'integer' },
             class_id: { type: 'integer' },
-            day_of_week: { type: 'string' },
+            day_of_week: { type: 'integer', description: '1=Sunday ... 7=Saturday' },
             start_time: { type: 'string' },
             end_time: { type: 'string' },
-            topic: { type: 'string' },
+            topic_id: { type: 'integer' },
+            topicRef: { $ref: '#/components/schemas/Topic' },
             teacher_name: { type: 'string' }
           },
           required: ['id', 'class_id', 'day_of_week', 'start_time', 'end_time']
@@ -156,12 +157,22 @@ const options = {
             date: { type: 'string', format: 'date' },
             start_time: { type: 'string' },
             end_time: { type: 'string' },
-            topic: { type: 'string' },
+            topic_id: { type: 'integer' },
+            topicRef: { $ref: '#/components/schemas/Topic' },
             teacher_name: { type: 'string' },
             is_cancelled: { type: 'boolean', default: false, description: 'האם השיעור בוטל' },
             cancellation_reason: { type: 'string', description: 'סיבת הביטול' }
           },
           required: ['id', 'class_id', 'date', 'start_time', 'end_time']
+        },
+
+        Topic: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            name: { type: 'string' }
+          },
+          required: ['id', 'name']
         },
 
         Attendance: {
