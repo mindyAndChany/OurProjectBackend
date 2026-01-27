@@ -10,6 +10,7 @@ import { ClassModel } from '../models/class.model.js';
 import { WeeklySchedule } from '../models/weekly_schedule.model.js';
 import { Lesson } from '../models/lesson.model.js';
 import { Attendance } from '../models/attendance.model.js';
+import { Topic } from '../models/topic.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
@@ -18,7 +19,7 @@ export const sequelize = new Sequelize({
   username: 'admin',
   password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
   database: 'edulinkdb',
-  models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson, Attendance],
+  models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson, Attendance, Topic],
   // Disable query logging for cleaner output
   logging: false,
   dialectOptions: {
