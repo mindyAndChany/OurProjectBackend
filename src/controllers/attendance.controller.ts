@@ -55,10 +55,25 @@ export const createAttendanceHandler = async (req: Request, res: Response) => {
         const body: any = req.body as any;
         const studentIdentifier = body.student_id ?? body.studentId ?? body.student_identifier ?? body.studentIdNumber ?? body.id_number;
         const lessonIdentifier = body.lesson_id ?? body.lessonId;
+        const normalizeStatus = (val: any): 'present' | 'late' | 'absent' | 'approved absent' => {
+            const map: Record<string, 'present' | 'late' | 'absent' | 'approved absent'> = {
+                '0': 'present',
+                '1': 'late',
+                '2': 'absent',
+                '3': 'approved absent',
+            };
+            if (typeof val === 'number') val = String(val);
+            if (typeof val === 'string') {
+                const trimmed = val.trim().toLowerCase();
+                if (map[trimmed]) return map[trimmed];
+                if (["present","late","absent","approved absent"].includes(trimmed)) return trimmed as any;
+            }
+            throw new Error('Invalid attendance status');
+        };
         const payload = {
             student_id: studentIdentifier,
             lesson_id: Number(lessonIdentifier),
-            status: body.status as 'present' | 'late' | 'absent' | 'approved absent',
+            status: normalizeStatus(body.status),
         };
         const item = await createAttendance(payload as any);
         res.status(201).json(item);
@@ -70,6 +85,9 @@ export const createAttendanceHandler = async (req: Request, res: Response) => {
         if (message.includes('Student not found')) {
             return res.status(400).json({ error: 'Student not found for provided identifier' });
         }
+        if (message.includes('Invalid attendance status')) {
+            return res.status(400).json({ error: 'Invalid attendance status. Use 1-4 or enum string.' });
+        }
         res.status(500).json({ error: 'Failed to create attendance' });
     }
 };
@@ -77,11 +95,39 @@ export const createAttendanceHandler = async (req: Request, res: Response) => {
 export const updateAttendanceHandler = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const updated = await updateAttendanceById(Number(id), req.body);
+        const body: any = req.body as any;
+        if (body?.status === undefined) {
+            return res.status(400).json({ error: 'status is required' });
+        }
+        const map: Record<string, 'present' | 'late' | 'absent' | 'approved absent'> = {
+            '0': 'present',
+            '1': 'late',
+            '2': 'absent',
+            '3': 'approved absent',
+        };
+        let val: any = body.status;
+        if (typeof val === 'number') val = String(val);
+        let normalized: 'present' | 'late' | 'absent' | 'approved absent';
+        if (typeof val === 'string') {
+            const trimmed = val.trim().toLowerCase();
+            if (map[trimmed]) {
+                normalized = map[trimmed];
+            } else if (["present","late","absent","approved absent"].includes(trimmed)) {
+                normalized = trimmed as any;
+            } else {
+                return res.status(400).json({ error: 'Invalid attendance status. Use 1-4 or enum string.' });
+            }
+        } else {
+            return res.status(400).json({ error: 'Invalid attendance status. Use 1-4 or enum string.' });
+        }
+        const updated = await updateAttendanceById(Number(id), { status: normalized });
         if (!updated) return res.status(404).json({ error: 'Attendance not found' });
         res.json(updated);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update attendance' });
+        const message = (error as Error)?.message ?? '';
+        // eslint-disable-next-line no-console
+        console.error('Failed to update attendance:', message);
+        res.status(500).json({ error: 'Failed to update attendance', details: message });
     }
 };
 

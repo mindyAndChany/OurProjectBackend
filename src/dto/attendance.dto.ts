@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsIn, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateAttendanceDto {
   @IsNumber()
@@ -9,13 +9,13 @@ export class CreateAttendanceDto {
   @IsNotEmpty()
   lessonId: number = 0;
 
-  @IsEnum(['present', 'late', 'absent', 'approved absent'])
+  @IsIn([1, 2, 3, 0, 'present', 'late', 'absent', 'approved absent'])
   @IsNotEmpty()
-  status: 'present' | 'late' | 'absent' | 'approved absent' = 'present';
+  status: number | 'present' | 'late' | 'absent' | 'approved absent' = 'present';
 }
 
 export class UpdateAttendanceDto {
-  @IsEnum(['present', 'late', 'absent', 'approved absent'])
+  @IsIn([1, 2, 3, 0, 'present', 'late', 'absent', 'approved absent'])
   @IsNotEmpty()
-  status: 'present' | 'late' | 'absent' | 'approved absent' = 'present';
+  status: number | 'present' | 'late' | 'absent' | 'approved absent' = 'present';
 }
