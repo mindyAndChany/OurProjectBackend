@@ -17,7 +17,7 @@ type UpdateLessonInput = Partial<AddLessonInput>;
 
 export const getLessons = async () => {
   return await Lesson.findAll({
-    // include: [{ model: Topic, as: 'topicRef', attributes: ['id', 'name'] }],
+  include: [{ model: Topic, as: 'topicRef', attributes: ['id', 'name'] }],
   });
 };
 
@@ -39,11 +39,11 @@ export const addLesson = async (data: AddLessonInput) => {
     if (name && typeof name === 'string' && name.trim() !== '') {
       const [topic] = await Topic.findOrCreate({ where: { name: name.trim() }, defaults: { name: name.trim() } });
       clean.topic_id = topic.id;
+      // Ensure legacy string column is populated if missing
+      if (!clean.topic) clean.topic = topic.name;
     }
   }
 
-  // Avoid persisting legacy topic string when FK is present
-  if (clean.topic_id) delete clean.topic;
   delete clean.topicName;
 
   return await Lesson.create(clean);
@@ -61,9 +61,10 @@ export const updateLessonById = async (id: number, data: UpdateLessonInput) => {
     if (name) {
       const [topic] = await Topic.findOrCreate({ where: { name }, defaults: { name } });
       clean.topic_id = topic.id;
+      // Keep legacy string column in sync when possible
+      if (!clean.topic) clean.topic = topic.name;
     }
   }
-  if (clean.topic_id) delete clean.topic;
   delete clean.topicName;
 
   await item.update(clean);
