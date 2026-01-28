@@ -7,5 +7,5 @@ export class SemesterBoundary extends Model {
   year!: number;
 
   @Column(DataType.DATEONLY)
-  year_a_end_date!: string; // stored as DATE in DB, YYYY-MM-DD
+  switch_date!: string; // stored as DATE in DB, YYYY-MM-DD
 }

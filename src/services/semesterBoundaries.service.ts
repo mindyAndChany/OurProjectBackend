@@ -2,10 +2,10 @@ import { SemesterBoundary } from '../models/semester_boundary.model.js';
 
 export type CreateSemesterBoundaryInput = {
   year: number;
-  year_a_end_date: string; // YYYY-MM-DD
+  switch_date: string; // YYYY-MM-DD
 };
 
-export type UpdateSemesterBoundaryInput = Partial<Pick<CreateSemesterBoundaryInput, 'year_a_end_date'>>;
+export type UpdateSemesterBoundaryInput = Partial<Pick<CreateSemesterBoundaryInput, 'switch_date'>>;
 
 export const getSemesterBoundaries = async () => {
   return await SemesterBoundary.findAll({ order: [['year', 'ASC']] });
@@ -16,13 +16,13 @@ export const getSemesterBoundaryByYear = async (year: number) => {
 };
 
 export const createSemesterBoundary = async (data: CreateSemesterBoundaryInput) => {
-  return await SemesterBoundary.create({ year: data.year, year_a_end_date: data.year_a_end_date });
+  return await SemesterBoundary.create({ year: data.year, switch_date: data.switch_date });
 };
 
 export const updateSemesterBoundaryByYear = async (year: number, data: UpdateSemesterBoundaryInput) => {
   const item = await SemesterBoundary.findByPk(year);
   if (!item) return null;
-  await item.update({ year_a_end_date: data.year_a_end_date ?? item.year_a_end_date });
+  await item.update({ switch_date: data.switch_date ?? item.switch_date });
   return item;
 };
 

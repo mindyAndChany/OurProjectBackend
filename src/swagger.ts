@@ -229,24 +229,24 @@ const options = {
           type: 'object',
           properties: {
             year: { type: 'integer', description: 'students.registration_year' },
-            year_a_end_date: { type: 'string', format: 'date' }
+            switch_date: { type: 'string', format: 'date' }
           },
-          required: ['year', 'year_a_end_date']
+          required: ['year', 'switch_date']
         },
 
         SemesterBoundaryCreateRequest: {
           type: 'object',
           properties: {
             year: { type: 'integer' },
-            year_a_end_date: { type: 'string', format: 'date' }
+            switch_date: { type: 'string', format: 'date' }
           },
-          required: ['year', 'year_a_end_date']
+          required: ['year', 'switch_date']
         },
 
         SemesterBoundaryUpdateRequest: {
           type: 'object',
           properties: {
-            year_a_end_date: { type: 'string', format: 'date' }
+            switch_date: { type: 'string', format: 'date' }
           }
         },
 
