@@ -189,6 +189,67 @@ const options = {
           required: ['id', 'student_id', 'lesson_id', 'status']
         },
 
+        StudentAchievement: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            student_id: { type: 'integer' },
+            topic: { type: 'string' },
+            semester: { type: 'string', description: 'e.g. שנה א מחצית א' },
+            final_grade: { type: 'number', format: 'float', nullable: true },
+            attendance_percentage: { type: 'number', format: 'float' },
+            created_at: { type: 'string', format: 'date-time' }
+          },
+          required: ['id', 'student_id', 'topic', 'semester', 'attendance_percentage']
+        },
+
+        StudentAchievementCreateRequest: {
+          type: 'object',
+          properties: {
+            student_id: { type: 'integer' },
+            topic: { type: 'string' },
+            semester: { type: 'string' },
+            final_grade: { type: 'number', format: 'float', nullable: true },
+            attendance_percentage: { type: 'number', format: 'float' }
+          },
+          required: ['student_id', 'topic', 'semester', 'attendance_percentage']
+        },
+
+        StudentAchievementUpdateRequest: {
+          type: 'object',
+          properties: {
+            topic: { type: 'string' },
+            semester: { type: 'string' },
+            final_grade: { type: 'number', format: 'float', nullable: true },
+            attendance_percentage: { type: 'number', format: 'float' }
+          }
+        },
+
+        SemesterBoundary: {
+          type: 'object',
+          properties: {
+            year: { type: 'integer', description: 'students.registration_year' },
+            year_a_end_date: { type: 'string', format: 'date' }
+          },
+          required: ['year', 'year_a_end_date']
+        },
+
+        SemesterBoundaryCreateRequest: {
+          type: 'object',
+          properties: {
+            year: { type: 'integer' },
+            year_a_end_date: { type: 'string', format: 'date' }
+          },
+          required: ['year', 'year_a_end_date']
+        },
+
+        SemesterBoundaryUpdateRequest: {
+          type: 'object',
+          properties: {
+            year_a_end_date: { type: 'string', format: 'date' }
+          }
+        },
+
       },
     },
   },
