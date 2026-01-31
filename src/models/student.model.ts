@@ -126,4 +126,7 @@ export class Student extends Model {
 
   @Column(DataType.STRING)
   trend!: string;
+
+  @Column(DataType.TEXT)
+  photo_url?: string;
 }

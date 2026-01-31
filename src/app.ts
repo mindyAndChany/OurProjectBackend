@@ -1,9 +1,11 @@
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import setupSwagger from './swagger.js';
 import authRoutes from './routes/auth.routes.js';
 import studentRoutes from './routes/studentsData.routes.js';
 import { sequelize } from './store/db.js';
+import { DataTypes } from 'sequelize';
 import calendarRoutes from './routes/calendar.routes.js'; 
 import coursesRoutes from './routes/courses.routes.js';
 import classesRoutes from './routes/classes.routes.js';
@@ -11,6 +13,8 @@ import weeklySchedulesRoutes from './routes/weeklySchedules.routes.js';
 import lessonsRoutes from './routes/lessons.routes.js';
 import attendanceRoutes from './routes/attendance.routes.js';
 import topicsRoutes from './routes/topics.routes.js';
+import studentAchievementsRoutes from './routes/studentAchievements.routes.js';
+import semesterBoundariesRoutes from './routes/semesterBoundaries.routes.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -41,6 +45,11 @@ app.use('/api/weekly-schedules', weeklySchedulesRoutes);
 app.use('/api/lessons', lessonsRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/topics', topicsRoutes);
+app.use('/api/student-achievements', studentAchievementsRoutes);
+app.use('/api/semester-boundaries', semesterBoundariesRoutes);
+
+// 📁 Static for uploaded files (when not using cloud storage)
+app.use('/uploads', express.static(path.resolve('uploads')));
 
 // 📘 סוואגר
 
@@ -50,10 +59,19 @@ console.log('📥 calling setupSwagger...');
 setupSwagger(app);
 console.log('📘 Swagger setup complete');
 
+
 // 🚀 הרצת האפליקציה
-sequelize.sync().then(() => {
-  console.log('About to start listening...');
-  app.listen(port, () => {
-    console.log(`🚀 Express app running on http://localhost:${port}`);
-  });
-});
+
+(async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: false });
+    console.log('About to start listening...');
+    app.listen(port, () => {
+      console.log(`🚀 Express app running on http://localhost:${port}`);
+    });
+  } catch (err) {
+    console.error('❌ Sequelize initialization failed:', err);
+    process.exit(1);
+  }
+})();
