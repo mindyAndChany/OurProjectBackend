@@ -43,6 +43,7 @@
     "@nestjs/sequelize": "^11.0.1",
     "@nestjs/swagger": "^11.2.3",
     "bcrypt": "^6.0.0",
+    "class-validator": "^0.14.3",
     "cors": "^2.8.5",
     "express": "^4.22.1",
     "knex": "^3.1.0",
