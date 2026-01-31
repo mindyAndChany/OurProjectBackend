@@ -11,6 +11,7 @@ const options = {
       description: 'API docs',
     },
     components: {
+      // -----------------------------------------------------------------------------------------------------------------
       schemas: {
         AuthLoginRequest: {
           type: 'object',
@@ -223,6 +224,18 @@ const options = {
             final_grade: { type: 'number', format: 'float', nullable: true },
             attendance_percentage: { type: 'number', format: 'float' }
           }
+        },
+
+        StudentDocument: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            student_id: { type: 'integer' },
+            url: { type: 'string' },
+            public_id: { type: 'string', nullable: true },
+            created_at: { type: 'string', format: 'date-time' }
+          },
+          required: ['id', 'student_id', 'url', 'created_at']
         },
 
         SemesterBoundary: {

@@ -4,11 +4,11 @@ import { getStudentAchievements, getStudentAchievementById, createStudentAchieve
 export const getStudentAchievementsHandler = async (req: Request, res: Response) => {
   try {
     const { student_id, topic, semester } = req.query;
-    const list = await getStudentAchievements({
-      student_id: student_id !== undefined ? Number(student_id) : undefined,
-      topic: topic !== undefined ? String(topic) : undefined,
-      semester: semester !== undefined ? String(semester) : undefined,
-    });
+    const filters: Partial<{ student_id: number; topic: string; semester: string }> = {};
+    if (student_id !== undefined) filters.student_id = Number(student_id);
+    if (topic !== undefined) filters.topic = String(topic);
+    if (semester !== undefined) filters.semester = String(semester);
+    const list = await getStudentAchievements(filters);
     res.json(list);
   } catch (error) {
     console.error('Failed to get achievements:', error);

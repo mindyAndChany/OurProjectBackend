@@ -15,7 +15,7 @@ export class AddStudentService {
     'zipcode', 'father_name_he', 'father_mobile_he', 'mother_name_he',
     'track', 'track2', 'track3', 'marital_status', 'class_teaching', 'bookshelf', 'notes',
     'perach', 'external_mother', 'external_father', 'birth_country', 'married_date',
-    'married_name', 'personal_mobile', 'trend', 'chetz', 'phone', 'payment_method'
+    'married_name', 'personal_mobile', 'trend', 'chetz', 'phone', 'payment_method','photo_url'
   ];
 
   async addStudent(input: Record<string, any>) {
