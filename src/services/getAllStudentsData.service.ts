@@ -27,7 +27,7 @@ export class GetAllStudentsDataService {
   'registration_year', 'is_graduate', 'class_kodesh', 'class_teaching', 'track', 'track2', 'track3',
   'payment_status', 'paid_amount', 'birthdate_gregorian', 'birthdate_hebrew', 'married_date', 'married_name', 'notes',
   'institution_code', 'email', 'serial_number', 'nickname', 'zipcode', 'father_name_he', 'father_mobile_he',
-  'mother_name_he', 'bookshelf', 'perach', 'external_mother', 'external_father', 'birth_country',
+  'mother_name_he', 'bookshelf', 'perach', 'external_mother', 'external_father', 'birth_country','mother_mobile_he',
   'personal_mobile', 'trend', 'chetz', 'payment_method','photo_url'
 ];
 
@@ -53,7 +53,7 @@ export class GetAllStudentsDataService {
   'payment_status', 'paid_amount', 'birthdate_gregorian', 'birthdate_hebrew', 'married_date', 'married_name', 'notes',
   'institution_code', 'email', 'serial_number', 'nickname', 'zipcode', 'father_name_he', 'father_mobile_he',
   'mother_name_he', 'bookshelf', 'perach', 'external_mother', 'external_father', 'birth_country',
-  'personal_mobile', 'trend', 'chetz', 'payment_method','photo_url'
+  'personal_mobile', 'trend', 'chetz', 'payment_method','photo_url','mother_mobile_he'
 ];
 
 

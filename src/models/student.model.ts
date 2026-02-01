@@ -29,7 +29,7 @@ export class Student extends Model {
   @Column(DataType.STRING)
   class_kodesh!: string;
 
-  @Column(DataType.STRING)
+  @Column({ type: DataType.STRING, defaultValue: 'רווקה' })
   marital_status!: string;
 
   @Column(DataType.STRING)
