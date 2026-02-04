@@ -1,5 +1,6 @@
 import { WeeklySchedule } from '../models/weekly_schedule.model.js';
 import { Topic } from '../models/topic.model.js';
+import { Room } from '../models/room.model.js';
 
 type AddWeeklyScheduleInput = {
   class_id: number;
@@ -10,19 +11,26 @@ type AddWeeklyScheduleInput = {
   topicName?: string;
   topic?: string; // legacy
   teacher_name?: string;
+  room_id?: number;
 };
 
 type UpdateWeeklyScheduleInput = Partial<AddWeeklyScheduleInput>;
 
 export const getWeeklySchedules = async () => {
   return await WeeklySchedule.findAll({
-    include: [{ model: Topic, as: 'topicRef', attributes: ['id', 'name'] }],
+    include: [
+      { model: Topic, as: 'topicRef', attributes: ['id', 'name'] },
+      { model: Room, as: 'roomRef', attributes: ['id', 'name', 'number'] },
+    ],
   });
 };
 
 export const getWeeklyScheduleById = async (id: number) => {
   return await WeeklySchedule.findByPk(id, {
-    include: [{ model: Topic, as: 'topicRef', attributes: ['id', 'name'] }],
+    include: [
+      { model: Topic, as: 'topicRef', attributes: ['id', 'name'] },
+      { model: Room, as: 'roomRef', attributes: ['id', 'name', 'number'] },
+    ],
   });
 };
 

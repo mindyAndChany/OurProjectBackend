@@ -307,6 +307,7 @@ router.post(
 
       const folder = `students/${id}`;
       let photoUrl: string | null = null;
+      let photoName: string | null = null;
       const documents: { name: string; url: string; public_id?: string | null }[] = [];
 
       const saveToDisk = async (buf: Buffer, originalName: string): Promise<string> => {
@@ -338,12 +339,14 @@ router.post(
             isImage ? 'image' : 'raw'
           );
           photoUrl = result.url;
+          photoName = (result.original_filename || photoFile.originalname);
         } else {
           photoUrl = await saveToDisk(photoFile.buffer, photoFile.originalname);
+          photoName = photoFile.originalname;
         }
       }
 
-      // Documents upload
+      // Documents upload 
       for (const doc of documentFiles) {
         if (fileUploadService.isCloudEnabled()) {
           const isImage = (doc.mimetype || '').startsWith('image/');
@@ -351,9 +354,14 @@ router.post(
             doc.buffer,
             doc.originalname,
             folder,
+            
             isImage ? 'image' : 'raw'
           );
-          documents.push({ name: doc.originalname, url: result.url, public_id: (result.public_id ?? null) as string | null });
+          documents.push({
+            name: (result.original_filename || doc.originalname),
+            url: result.url,
+            public_id: (result.public_id ?? null) as string | null,
+          });
         } else {
           const url = await saveToDisk(doc.buffer, doc.originalname);
           documents.push({ name: doc.originalname, url });
@@ -368,12 +376,12 @@ router.post(
         }
         if (documents.length > 0) {
           await StudentDocument.bulkCreate(
-            documents.map(d => ({ student_id: student.id, url: d.url, public_id: d.public_id ?? null }))
+            documents.map(d => ({ student_id: student.id, name: d.name, url: d.url, public_id: d.public_id ?? null }))
           );
         }
       }
 
-      return res.json({ id_number: id, photoUrl, documents });
+      return res.json({ id_number: id, photoUrl, photoName, documents });
     } catch (err: any) {
       console.error('uploadFiles error:', err);
       return res.status(500).json({ error: err?.message || 'Internal server error' });
@@ -425,7 +433,7 @@ router.get('/:id/documents', async (req, res) => {
 
     // Avoid selecting non-existent columns defensively; map url if present
     const docs = await StudentDocument.findAll({
-      attributes: ['id', 'student_id', 'public_id', 'created_at'],
+      attributes: ['id', 'student_id', 'name', 'url', 'public_id', 'created_at'],
       where: { student_id: student.id },
       order: [['created_at', 'DESC']]
     });

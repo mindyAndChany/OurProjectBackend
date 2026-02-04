@@ -146,7 +146,9 @@ const options = {
             end_time: { type: 'string' },
             topic_id: { type: 'integer' },
             topicRef: { $ref: '#/components/schemas/Topic' },
-            teacher_name: { type: 'string' }
+            teacher_name: { type: 'string' },
+            room_id: { type: 'integer' },
+            roomRef: { $ref: '#/components/schemas/Room' }
           },
           required: ['id', 'class_id', 'day_of_week', 'start_time', 'end_time']
         },
@@ -162,7 +164,9 @@ const options = {
             topicRef: { $ref: '#/components/schemas/Topic' },
             teacher_name: { type: 'string' },
             is_cancelled: { type: 'boolean', default: false, description: 'האם השיעור בוטל' },
-            cancellation_reason: { type: 'string', description: 'סיבת הביטול' }
+            cancellation_reason: { type: 'string', description: 'סיבת הביטול' },
+            room_id: { type: 'integer' },
+            roomRef: { $ref: '#/components/schemas/Room' }
           },
           required: ['id', 'class_id', 'date', 'start_time', 'end_time']
         },
@@ -188,6 +192,51 @@ const options = {
             }
           },
           required: ['id', 'student_id', 'lesson_id', 'status']
+        },
+
+        Room: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            name: { type: 'string' },
+            number: { type: 'string' },
+            is_computer_lab: { type: 'boolean' },
+            has_makren: { type: 'boolean' },
+            floor: { type: 'integer' },
+            seat_count: { type: 'integer' },
+            is_available: { type: 'boolean' },
+            primary_use: { type: 'string' }
+          },
+          required: ['id', 'name', 'number']
+        },
+
+        RoomCreateRequest: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            number: { type: 'string' },
+            is_computer_lab: { type: 'boolean' },
+            has_makren: { type: 'boolean' },
+            floor: { type: 'integer' },
+            seat_count: { type: 'integer' },
+            is_available: { type: 'boolean' },
+            primary_use: { type: 'string' }
+          },
+          required: ['name', 'number']
+        },
+
+        RoomUpdateRequest: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            number: { type: 'string' },
+            is_computer_lab: { type: 'boolean' },
+            has_makren: { type: 'boolean' },
+            floor: { type: 'integer' },
+            seat_count: { type: 'integer' },
+            is_available: { type: 'boolean' },
+            primary_use: { type: 'string' }
+          }
         },
 
         StudentAchievement: {

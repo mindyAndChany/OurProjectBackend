@@ -14,6 +14,7 @@ import { Topic } from '../models/topic.model.js';
 import { StudentAchievement } from '../models/student_achievement.model.js';
 import { SemesterBoundary } from '../models/semester_boundary.model.js';
 import { StudentDocument } from '../models/student_document.model.js';
+import { Room } from '../models/room.model.js';
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
@@ -22,7 +23,7 @@ export const sequelize = new Sequelize({
   username: 'admin',
   password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
   database: 'edulinkdb',
-  models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson, Attendance, Topic, StudentAchievement, SemesterBoundary, StudentDocument],
+  models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson, Attendance, Topic, StudentAchievement, SemesterBoundary, StudentDocument, Room],
   // Enable query logging to help diagnose sync errors
   // logging: console.log,
   logging:false,

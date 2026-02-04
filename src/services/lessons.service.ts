@@ -1,5 +1,6 @@
 import { Lesson } from '../models/lesson.model.js';
 import { Topic } from '../models/topic.model.js';
+import { Room } from '../models/room.model.js';
 
 type AddLessonInput = {
   class_id: number;
@@ -11,19 +12,26 @@ type AddLessonInput = {
   topic?: string; // legacy, will be mapped to topicName if provided
   is_cancelled?: boolean;
   cancellation_reason?: string;
+  room_id?: number;
 };
 
 type UpdateLessonInput = Partial<AddLessonInput>;
 
 export const getLessons = async () => {
   return await Lesson.findAll({
-  include: [{ model: Topic, as: 'topicRef', attributes: ['id', 'name'] }],
+  include: [
+    { model: Topic, as: 'topicRef', attributes: ['id', 'name'] },
+    { model: Room, as: 'roomRef', attributes: ['id', 'name', 'number'] },
+  ],
   });
 };
 
 export const getLessonById = async (id: number) => {
   return await Lesson.findByPk(id, {
-    include: [{ model: Topic, as: 'topicRef', attributes: ['id', 'name'] }],
+    include: [
+      { model: Topic, as: 'topicRef', attributes: ['id', 'name'] },
+      { model: Room, as: 'roomRef', attributes: ['id', 'name', 'number'] },
+    ],
   });
 };
 

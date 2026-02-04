@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { ClassModel } from './class.model.js';
 import { Topic } from './topic.model.js';
+import { Room } from './room.model.js';
 
 @Table({ tableName: 'lessons', timestamps: false })
 export class Lesson extends Model {
@@ -44,4 +45,12 @@ export class Lesson extends Model {
 
   @BelongsTo(() => Topic)
   topicRef?: Topic;
+
+  // Room assignment for actual lesson occurrence
+  @ForeignKey(() => Room)
+  @Column(DataType.INTEGER)
+  room_id?: number;
+
+  @BelongsTo(() => Room)
+  roomRef?: Room;
 }
