@@ -175,9 +175,11 @@ const options = {
           type: 'object',
           properties: {
             id: { type: 'integer' },
-            name: { type: 'string' }
+            name: { type: 'string' },
+            course_id: { type: 'integer' },
+            courseRef: { $ref: '#/components/schemas/Course' }
           },
-          required: ['id', 'name']
+          required: ['id', 'name', 'course_id']
         },
 
         Attendance: {

@@ -30,8 +30,11 @@ import { getTopicsHandler, addTopicHandler } from '../controllers/topics.control
  *             properties:
  *               name:
  *                 type: string
+ *               course_id:
+ *                 type: integer
  *             required:
  *               - name
+ *               - course_id
  *     responses:
  *       201:
  *         description: Topic created
