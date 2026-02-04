@@ -20,7 +20,7 @@ export class Room extends Model {
   is_computer_lab?: boolean;
 
   @Column({ type: DataType.BOOLEAN, allowNull: true, defaultValue: false })
-  has_projector?: boolean;
+  has_makren?: boolean;
 
   @Column({ type: DataType.INTEGER, allowNull: true })
   floor?: number;

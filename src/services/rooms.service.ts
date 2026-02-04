@@ -4,7 +4,7 @@ export type AddRoomInput = {
   name: string;
   number: string;
   is_computer_lab?: boolean;
-  has_projector?: boolean;
+  has_makren?: boolean;
   floor?: number;
   seat_count?: number;
   is_available?: boolean;

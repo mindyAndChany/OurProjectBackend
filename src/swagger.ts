@@ -199,7 +199,13 @@ const options = {
           properties: {
             id: { type: 'integer' },
             name: { type: 'string' },
-            number: { type: 'string' }
+            number: { type: 'string' },
+            is_computer_lab: { type: 'boolean' },
+            has_makren: { type: 'boolean' },
+            floor: { type: 'integer' },
+            seat_count: { type: 'integer' },
+            is_available: { type: 'boolean' },
+            primary_use: { type: 'string' }
           },
           required: ['id', 'name', 'number']
         },
@@ -208,7 +214,13 @@ const options = {
           type: 'object',
           properties: {
             name: { type: 'string' },
-            number: { type: 'string' }
+            number: { type: 'string' },
+            is_computer_lab: { type: 'boolean' },
+            has_makren: { type: 'boolean' },
+            floor: { type: 'integer' },
+            seat_count: { type: 'integer' },
+            is_available: { type: 'boolean' },
+            primary_use: { type: 'string' }
           },
           required: ['name', 'number']
         },
@@ -217,7 +229,13 @@ const options = {
           type: 'object',
           properties: {
             name: { type: 'string' },
-            number: { type: 'string' }
+            number: { type: 'string' },
+            is_computer_lab: { type: 'boolean' },
+            has_makren: { type: 'boolean' },
+            floor: { type: 'integer' },
+            seat_count: { type: 'integer' },
+            is_available: { type: 'boolean' },
+            primary_use: { type: 'string' }
           }
         },
 
