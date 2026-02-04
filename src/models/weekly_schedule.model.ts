@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { Topic } from './topic.model.js';
+import { Room } from './room.model.js';
 
 // Point to existing table in DB (PGAdmin shows it is named weekly_schedule)
 @Table({ tableName: 'weekly_schedule', timestamps: false })
@@ -32,4 +33,12 @@ export class WeeklySchedule extends Model {
 
   @BelongsTo(() => Topic)
   topicRef?: Topic;
+
+  // Room assignment for planned timetable entry
+  @ForeignKey(() => Room)
+  @Column(DataType.INTEGER)
+  room_id?: number;
+
+  @BelongsTo(() => Room)
+  roomRef?: Room;
 }

@@ -7,7 +7,8 @@ async function run() {
     await sequelize.authenticate();
     console.log('Authenticated.');
     console.log('Syncing...');
-    await sequelize.sync({ alter: false });
+    const alter = String(process.env.DB_ALTER || '').toLowerCase() === 'true';
+    await sequelize.sync({ alter });
     console.log('Synced.');
   } catch (err) {
     const e: any = err;

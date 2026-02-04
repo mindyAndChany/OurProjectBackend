@@ -15,6 +15,7 @@ import attendanceRoutes from './routes/attendance.routes.js';
 import topicsRoutes from './routes/topics.routes.js';
 import studentAchievementsRoutes from './routes/studentAchievements.routes.js';
 import semesterBoundariesRoutes from './routes/semesterBoundaries.routes.js';
+import roomsRoutes from './routes/rooms.routes.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -47,6 +48,7 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/topics', topicsRoutes);
 app.use('/api/student-achievements', studentAchievementsRoutes);
 app.use('/api/semester-boundaries', semesterBoundariesRoutes);
+app.use('/api/rooms', roomsRoutes);
 
 // 📁 Static for uploaded files (when not using cloud storage)
 app.use('/uploads', express.static(path.resolve('uploads')));

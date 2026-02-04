@@ -7,6 +7,7 @@ import { Course } from './models/course.model.js';
 import { ClassModel } from './models/class.model.js';
 import { WeeklySchedule } from './models/weekly_schedule.model.js';
 import { Lesson } from './models/lesson.model.js';
+import { Room } from './models/room.model.js';
 import { CoursesModule } from './modules/courses.module';
 import { ClassesModule } from './modules/classes.module';
 import { WeeklySchedulesModule } from './modules/weeklySchedules.module';
@@ -22,7 +23,7 @@ import { LessonsModule } from './modules/lessons.module';
       username: process.env.DB_USER || 'admin',
       password: process.env.DB_PASS || '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
       database: process.env.DB_NAME || 'edulinkdb',
-      models: [Student, Course, ClassModel, WeeklySchedule, Lesson],
+      models: [Student, Course, ClassModel, WeeklySchedule, Lesson, Room],
       autoLoadModels: true,
       synchronize: false,
       dialectOptions: { ssl: { require: true, rejectUnauthorized: false } },
