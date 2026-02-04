@@ -7,6 +7,7 @@ type AddWeeklyScheduleInput = {
   day_of_week: number | string;
   start_time: string;
   end_time: string;
+  year?: number;
   topic_id?: number;
   topicName?: string;
   topic?: string; // legacy

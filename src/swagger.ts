@@ -144,6 +144,7 @@ const options = {
             day_of_week: { type: 'integer', description: '1=Sunday ... 7=Saturday' },
             start_time: { type: 'string' },
             end_time: { type: 'string' },
+            year: { type: 'integer', description: 'שנת לימודים (למשל 2025)' },
             topic_id: { type: 'integer' },
             topicRef: { $ref: '#/components/schemas/Topic' },
             teacher_name: { type: 'string' },
