@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, HasMany } from 'sequelize-typescript';
+import { Topic } from './topic.model.js';
 
 @Table({ tableName: 'courses', timestamps: false })
 export class Course extends Model {
@@ -12,4 +13,7 @@ export class Course extends Model {
 
   @Column(DataType.STRING)
   type!: string; // e.g. kodesh / hora'ah / hitmahut
+
+  @HasMany(() => Topic)
+  topics?: Topic[];
 }

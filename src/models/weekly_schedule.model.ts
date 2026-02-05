@@ -23,6 +23,10 @@ export class WeeklySchedule extends Model {
   @Column(DataType.TIME)
   end_time!: string;
 
+  // Academic year for the schedule entry (e.g., 2025)
+  @Column(DataType.INTEGER)
+  year?: number;
+
   @Column(DataType.STRING)
   topic!: string;
 
