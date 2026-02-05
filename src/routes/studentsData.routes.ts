@@ -11,6 +11,7 @@ import { StudentDocument } from '../models/student_document.model.js';
 import { StudentsDataController } from '../controllers/studentsData.controller.js';
 import { GetStudentByIdService } from '../services/getStudentById.service.js';
 import { FileUploadService } from '../services/fileUpload.service.js';
+import { Op } from 'sequelize';
 
 const router = express.Router();
 
@@ -437,17 +438,7 @@ router.post(
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   url:
- *                     type: string
- *                   public_id:
- *                     type: string
- *                   created_at:
- *                     type: string
- *                     format: date-time
+ *                 $ref: '#/components/schemas/StudentDocument'
  *       404:
  *         description: Student not found
  */
@@ -516,6 +507,136 @@ router.get('/:id/photo', async (req, res) => {
     res.json({ id_number: id, photoUrl: student.photo_url || null });
   } catch (err: any) {
     console.error('get photo error:', err);
+    res.status(500).json({ error: err?.message || 'Internal server error' });
+  }
+});
+
+/**
+ * @openapi
+ * /api/studentsData/class/{className}/documents:
+ *   get:
+ *     summary: List documents for all students in a class
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - name: className
+ *         in: path
+ *         required: true
+ *         description: Class identifier (e.g. כיתה/"class_kodesh")
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Array of document records with student info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/StudentDocumentWithStudent'
+ */
+router.get('/class/:className/documents', async (req, res) => {
+  try {
+    const { className } = req.params;
+    if (!className) return res.status(400).json({ error: 'className parameter required' });
+
+    const students = await Student.findAll({
+      where: { class_kodesh: className },
+      attributes: ['id', 'id_number', 'first_name', 'last_name']
+    });
+
+    const studentIds = students.map(s => s.id);
+    if (studentIds.length === 0) return res.json([]);
+
+    const docs = await StudentDocument.findAll({
+      attributes: ['id', 'student_id', 'name', 'url', 'public_id', 'created_at'],
+      where: { student_id: { [Op.in]: studentIds } },
+      include: [{ model: Student, attributes: ['id', 'id_number', 'first_name', 'last_name'] }],
+      order: [['created_at', 'DESC']]
+    });
+
+    const payload = docs.map((d: any) => ({
+      id: d.id,
+      student_id: d.student_id,
+      id_number: d.student?.id_number ?? null,
+      first_name: d.student?.first_name ?? null,
+      last_name: d.student?.last_name ?? null,
+      name: (d as any).name ?? null,
+      url: (d as any).url ?? null,
+      public_id: d.public_id ?? null,
+      created_at: d.created_at,
+    }));
+    res.json(payload);
+  } catch (err: any) {
+    console.error('get class documents error:', err);
+    res.status(500).json({ error: err?.message || 'Internal server error' });
+  }
+});
+
+/**
+ * @openapi
+ * /api/studentsData/track/{trackName}/documents:
+ *   get:
+ *     summary: List documents for all students in a track
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - name: trackName
+ *         in: path
+ *         required: true
+ *         description: Track identifier (matches any of track/track2/track3)
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Array of document records with student info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/StudentDocumentWithStudent'
+ */
+router.get('/track/:trackName/documents', async (req, res) => {
+  try {
+    const { trackName } = req.params;
+    if (!trackName) return res.status(400).json({ error: 'trackName parameter required' });
+
+    const students = await Student.findAll({
+      where: {
+        [Op.or]: [
+          { track: trackName },
+          { track2: trackName },
+          { track3: trackName },
+        ]
+      },
+      attributes: ['id', 'id_number', 'first_name', 'last_name']
+    });
+
+    const studentIds = students.map(s => s.id);
+    if (studentIds.length === 0) return res.json([]);
+
+    const docs = await StudentDocument.findAll({
+      attributes: ['id', 'student_id', 'name', 'url', 'public_id', 'created_at'],
+      where: { student_id: { [Op.in]: studentIds } },
+      include: [{ model: Student, attributes: ['id', 'id_number', 'first_name', 'last_name'] }],
+      order: [['created_at', 'DESC']]
+    });
+
+    const payload = docs.map((d: any) => ({
+      id: d.id,
+      student_id: d.student_id,
+      id_number: d.student?.id_number ?? null,
+      first_name: d.student?.first_name ?? null,
+      last_name: d.student?.last_name ?? null,
+      name: (d as any).name ?? null,
+      url: (d as any).url ?? null,
+      public_id: d.public_id ?? null,
+      created_at: d.created_at,
+    }));
+    res.json(payload);
+  } catch (err: any) {
+    console.error('get track documents error:', err);
     res.status(500).json({ error: err?.message || 'Internal server error' });
   }
 });

@@ -283,11 +283,28 @@ const options = {
           properties: {
             id: { type: 'integer' },
             student_id: { type: 'integer' },
+            name: { type: 'string' },
             url: { type: 'string' },
             public_id: { type: 'string', nullable: true },
             created_at: { type: 'string', format: 'date-time' }
           },
-          required: ['id', 'student_id', 'url', 'created_at']
+          required: ['id', 'student_id', 'name', 'url', 'created_at']
+        },
+
+        StudentDocumentWithStudent: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            student_id: { type: 'integer' },
+            id_number: { type: 'string' },
+            first_name: { type: 'string' },
+            last_name: { type: 'string' },
+            name: { type: 'string' },
+            url: { type: 'string' },
+            public_id: { type: 'string', nullable: true },
+            created_at: { type: 'string', format: 'date-time' }
+          },
+          required: ['id', 'student_id', 'id_number', 'first_name', 'last_name', 'name', 'url', 'created_at']
         },
 
         SemesterBoundary: {
