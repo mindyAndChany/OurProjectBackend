@@ -36,7 +36,16 @@ export const getWeeklyScheduleById = async (id: number) => {
 };
 
 export const addWeeklySchedule = async (data: AddWeeklyScheduleInput) => {
-  const clean: any = { ...data };
+  const clean: any = {
+  class_id: data.class_id,
+  day_of_week: data.day_of_week,
+  start_time: data.start_time,
+  end_time: data.end_time,
+  year: data.year,
+  topic_id: data.topic_id,
+  room_id: data.room_id,
+  topic: data.topic
+};
   if (typeof clean.day_of_week === 'string') {
     const parsed = parseInt(clean.day_of_week, 10);
     if (!isNaN(parsed)) clean.day_of_week = parsed;
@@ -52,6 +61,12 @@ export const addWeeklySchedule = async (data: AddWeeklyScheduleInput) => {
   if (clean.topic_id) delete clean.topic;
   delete clean.topicName;
 
+if (typeof clean.class_id === 'string') {
+  clean.class_id = parseInt(clean.class_id, 10);
+}
+delete clean.topicRef;
+delete clean.roomRef;
+delete clean.teacher_name;
   return await WeeklySchedule.create(clean);
 };
 

@@ -15,5 +15,5 @@ export class Course extends Model {
   type!: string; // e.g. kodesh / hora'ah / hitmahut
 
   @HasMany(() => Topic)
-  topics?: Topic[];
+  topics?: any[];
 }

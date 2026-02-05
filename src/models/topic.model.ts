@@ -16,5 +16,5 @@ export class Topic extends Model {
   course_id!: number;
 
   @BelongsTo(() => Course)
-  courseRef?: Course;
+  courseRef?: any;
 }
