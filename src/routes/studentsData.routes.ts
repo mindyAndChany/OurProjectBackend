@@ -24,6 +24,22 @@ const fileUploadService = new FileUploadService();
 // Multer setup: keep files in memory so we can forward to cloud or save manually
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
 
+// Fix common mojibake when non-ASCII filenames arrive encoded as Latin-1
+function fixFilenameEncoding(name: string): string {
+  // Heuristic: common mojibake from UTF-8 shown as Latin-1/Windows-1252 uses 'Ã', 'Â'
+  // Hebrew-specific mojibake often shows many '×' followed by 0x80-0xBF bytes (e.g., ×\x9E)
+  const looksLatin1Utf8 = /(Ã|Â|�)/.test(name) || /×[\x80-\xBF]/.test(name);
+  if (looksLatin1Utf8) {
+    try {
+      const fixed = Buffer.from(name, 'latin1').toString('utf8');
+      return fixed;
+    } catch {
+      // fall through
+    }
+  }
+  return name;
+}
+
 /**
  * @openapi
  * /api/studentsData:
@@ -315,11 +331,21 @@ router.post(
         
         const baseDir = path.resolve('uploads', folder);
         await fs.promises.mkdir(baseDir, { recursive: true });
-        const safeName = `${Date.now()}-${originalName.replace(/[^a-zA-Z0-9_.-]/g, '_')}`;
+
+        const fixedOriginal = fixFilenameEncoding(originalName);
+        const parsed = path.parse(fixedOriginal);
+        const cleanBase = (parsed.name || 'file')
+          .replace(/[\\/:*?"<>|\u0000-\u001F]/g, '')
+          .trim() || 'file';
+        const cleanExt = (parsed.ext || '')
+          .replace(/[^.\w-]+/g, '')
+          .slice(0, 20);
+
+        const safeName = `${Date.now()}-${cleanBase}${cleanExt}`;
         const fullPath = path.join(baseDir, safeName);
         await fs.promises.writeFile(fullPath, buf);
         const relPath = path.join('/uploads', folder, safeName).replace(/\\/g, '/');
-                console.log("saveToDisk finish");
+        console.log("saveToDisk finish");
 
         return relPath;
       };
@@ -339,10 +365,10 @@ router.post(
             isImage ? 'image' : 'raw'
           );
           photoUrl = result.url;
-          photoName = (result.original_filename || photoFile.originalname);
+          photoName = fixFilenameEncoding(result.original_filename || photoFile.originalname);
         } else {
           photoUrl = await saveToDisk(photoFile.buffer, photoFile.originalname);
-          photoName = photoFile.originalname;
+          photoName = fixFilenameEncoding(photoFile.originalname);
         }
       }
 
@@ -358,13 +384,13 @@ router.post(
             isImage ? 'image' : 'raw'
           );
           documents.push({
-            name: (result.original_filename || doc.originalname),
+            name: fixFilenameEncoding(result.original_filename || doc.originalname),
             url: result.url,
             public_id: (result.public_id ?? null) as string | null,
           });
         } else {
           const url = await saveToDisk(doc.buffer, doc.originalname);
-          documents.push({ name: doc.originalname, url });
+          documents.push({ name: fixFilenameEncoding(doc.originalname), url });
         }
       }
 

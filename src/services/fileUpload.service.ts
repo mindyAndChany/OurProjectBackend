@@ -100,10 +100,13 @@ export class FileUploadService {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
         if (error || !result) return reject(error || new Error('No result from Cloudinary'));
+        const anyResult = result as any;
+        const originalNameFromContext = anyResult?.context?.custom?.originalName || anyResult?.context?.originalName;
+        const originalName = originalNameFromContext || anyResult.original_filename || filename;
         resolve({
           url: result.secure_url,
           public_id: result.public_id,
-          original_filename: (result as any).original_filename, // קיים כאשר משתמשים ב-filename_override
+          original_filename: originalName,
         });
       });
       streamifier.createReadStream(buffer).pipe(uploadStream);
