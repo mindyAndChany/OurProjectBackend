@@ -5,7 +5,10 @@ import {
   DataType,
   PrimaryKey,
   AutoIncrement,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
+import { ClassModel } from './class.model';
 
 @Table({ tableName: 'students', timestamps: false })
 export class Student extends Model {
@@ -26,7 +29,8 @@ export class Student extends Model {
   @Column(DataType.STRING)
   phone!: string; 
   
-  @Column(DataType.STRING)
+  @ForeignKey(() => ClassModel)
+  @Column({ type: DataType.STRING, references: { model: 'classes', key: 'name' } })
   class_kodesh!: string;
 
   @Column({ type: DataType.STRING, defaultValue: 'רווקה' })
@@ -43,14 +47,29 @@ export class Student extends Model {
 
  
 
-  @Column(DataType.STRING)
+  @ForeignKey(() => ClassModel)
+  @Column({ type: DataType.STRING, references: { model: 'classes', key: 'name' } })
   track!: string;
 
-  @Column(DataType.STRING)
+  @ForeignKey(() => ClassModel)
+  @Column({ type: DataType.STRING, references: { model: 'classes', key: 'name' } })
   track2!: string;
 
-  @Column(DataType.STRING)
+  @ForeignKey(() => ClassModel)
+  @Column({ type: DataType.STRING, references: { model: 'classes', key: 'name' } })
   track3!: string;
+
+  @BelongsTo(() => ClassModel, { foreignKey: 'class_kodesh', targetKey: 'name', as: 'kodeshClass' })
+  kodeshClass?: ClassModel;
+
+  @BelongsTo(() => ClassModel, { foreignKey: 'track', targetKey: 'name', as: 'primaryTrackClass' })
+  primaryTrackClass?: ClassModel;
+
+  @BelongsTo(() => ClassModel, { foreignKey: 'track2', targetKey: 'name', as: 'secondaryTrackClass' })
+  secondaryTrackClass?: ClassModel;
+
+  @BelongsTo(() => ClassModel, { foreignKey: 'track3', targetKey: 'name', as: 'tertiaryTrackClass' })
+  tertiaryTrackClass?: ClassModel;
 
   @Column(DataType.STRING)
   payment_status!: string;

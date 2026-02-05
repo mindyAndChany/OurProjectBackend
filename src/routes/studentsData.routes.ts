@@ -540,8 +540,12 @@ router.get('/class/:className/documents', async (req, res) => {
     const { className } = req.params;
     if (!className) return res.status(400).json({ error: 'className parameter required' });
 
+    const normalizedClassName = decodeURIComponent(className)
+      .trim()
+      .replace(/^['"\s]+|['"\s]+$/g, '');
+
     const students = await Student.findAll({
-      where: { class_kodesh: className },
+      where: { class_kodesh: normalizedClassName },
       attributes: ['id', 'id_number', 'first_name', 'last_name']
     });
 
@@ -602,12 +606,16 @@ router.get('/track/:trackName/documents', async (req, res) => {
     const { trackName } = req.params;
     if (!trackName) return res.status(400).json({ error: 'trackName parameter required' });
 
+    const normalizedTrackName = decodeURIComponent(trackName)
+      .trim()
+      .replace(/^['"\s]+|['"\s]+$/g, '');
+
     const students = await Student.findAll({
       where: {
         [Op.or]: [
-          { track: trackName },
-          { track2: trackName },
-          { track3: trackName },
+          { track: normalizedTrackName },
+          { track2: normalizedTrackName },
+          { track3: normalizedTrackName },
         ]
       },
       attributes: ['id', 'id_number', 'first_name', 'last_name']
