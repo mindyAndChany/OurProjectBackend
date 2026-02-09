@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getTopicsHandler, addTopicHandler } from '../controllers/topics.controller.js';
+import { getTopicsHandler, addTopicHandler, getTopicsByCourseHandler } from '../controllers/topics.controller.js';
 
 /**
  * @openapi
@@ -38,10 +38,32 @@ import { getTopicsHandler, addTopicHandler } from '../controllers/topics.control
  *     responses:
  *       201:
  *         description: Topic created
+ *
+ * /api/topics/course/{courseId}:
+ *   get:
+ *     summary: List topics by course
+ *     tags:
+ *       - Topics
+ *     parameters:
+ *       - in: path
+ *         name: courseId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of topics for the course
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Topic'
  */
 const router = Router();
 
 router.get('/', getTopicsHandler);
 router.post('/', addTopicHandler);
+router.get('/course/:courseId', getTopicsByCourseHandler);
 
 export default router;

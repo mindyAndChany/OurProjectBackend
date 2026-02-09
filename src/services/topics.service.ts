@@ -21,3 +21,14 @@ export const createTopic = async (name: string, course_id: number) => {
   });
   return topic;
 };
+
+export const listTopicsByCourse = async (course_id: number) => {
+  if (!Number.isInteger(course_id)) {
+    throw new Error('course_id must be an integer');
+  }
+  return await Topic.findAll({
+    where: { course_id },
+    order: [['name', 'ASC']],
+    include: [Course]
+  });
+};
