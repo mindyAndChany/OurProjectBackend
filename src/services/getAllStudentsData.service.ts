@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Student } from '../models/student.model.js';
 import { BadRequestException } from '@nestjs/common';
 import { Order } from 'sequelize';
-import { FindOptions } from 'sequelize'; // ודא שזה מיובא
+import { FindOptions, literal } from 'sequelize'; // ודא שזה מיובא
 
 type SortSpec = Array<{ column: string; direction?: 'ASC' | 'DESC' }>;
 
@@ -17,7 +17,17 @@ export class GetAllStudentsDataService {
 
 
   async findAll(): Promise<Student[]> {
-    return this.studentModel.findAll();
+    const hebrewCollation = (process.env.PG_HEBREW_COLLATION || '').trim();
+    return this.studentModel.findAll({
+      order: [
+        hebrewCollation
+          ? [literal(`"last_name" COLLATE "${hebrewCollation}"`), 'ASC']
+          : ['last_name', 'ASC'],
+        hebrewCollation
+          ? [literal(`"first_name" COLLATE "${hebrewCollation}"`), 'ASC']
+          : ['first_name', 'ASC'],
+      ],
+    });
   }
 
   // קבלת שדות ספציפיים עבור כל התלמידים
@@ -38,7 +48,18 @@ export class GetAllStudentsDataService {
       throw new BadRequestException('no valid categories');
     }
 
-    const rows = await this.studentModel.findAll({ attributes: attrs });
+    const hebrewCollation = (process.env.PG_HEBREW_COLLATION || '').trim();
+    const rows = await this.studentModel.findAll({
+      attributes: attrs,
+      order: [
+        hebrewCollation
+          ? [literal(`"last_name" COLLATE "${hebrewCollation}"`), 'ASC']
+          : ['last_name', 'ASC'],
+        hebrewCollation
+          ? [literal(`"first_name" COLLATE "${hebrewCollation}"`), 'ASC']
+          : ['first_name', 'ASC'],
+      ],
+    });
     const plainRows = rows.map(r => r.get({ plain: true }));
     return plainRows; 
   }
