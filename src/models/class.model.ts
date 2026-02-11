@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, HasMany } from 'sequelize-typescript';
-import { Student } from './student.model';
+import { Student } from './student.model.js';
 
 @Table({ tableName: 'classes', timestamps: false })
 export class ClassModel extends Model {

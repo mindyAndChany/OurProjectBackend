@@ -8,7 +8,7 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { ClassModel } from './class.model';
+import { ClassModel } from './class.model.js';
 
 @Table({ tableName: 'students', timestamps: false })
 export class Student extends Model {
