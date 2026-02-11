@@ -29,6 +29,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://edulink-xn9f.onrender.com',
+    'https://edulink-d65i.onrender.com'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type']
