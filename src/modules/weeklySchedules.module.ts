@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { WeeklySchedule } from '../models/weekly_schedule.model.js';
-import { WeeklySchedulesService } from './weeklySchedules.service';
-import { WeeklySchedulesController } from './weeklySchedules.controller';
+import { WeeklySchedulesService } from './weeklySchedules.service.js';
+import { WeeklySchedulesController } from './weeklySchedules.controller.js';
 
 @Module({
   imports: [SequelizeModule.forFeature([WeeklySchedule])],

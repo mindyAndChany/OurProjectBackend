@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { WeeklySchedulesService } from './weeklySchedules.service';
+import { WeeklySchedulesService } from './weeklySchedules.service.js';
 
 @ApiTags('WeeklySchedules')
 @Controller('api/weekly-schedules')

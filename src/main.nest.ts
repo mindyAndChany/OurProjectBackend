@@ -33,7 +33,7 @@
 
 // bootstrap();
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 import { json, urlencoded } from 'express';
 import { Sequelize } from 'sequelize-typescript';
 

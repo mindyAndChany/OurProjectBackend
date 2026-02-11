@@ -3,7 +3,7 @@ import { GetAllStudentsDataService } from '../services/getAllStudentsData.servic
 import { AddStudentService } from '../services/AddStudent.service.js';
 import { UpdateStudentService } from '../services/UpdateStudent.service.js';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
-import { StudentDto } from './dto/student.dto';
+import { StudentDto } from './dto/student.dto.js';
 import { GetStudentByIdService } from '../services/getStudentById.service.js';
 
 

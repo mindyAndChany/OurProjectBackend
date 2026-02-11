@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { CoursesService } from './courses.service';
+import { CoursesService } from './courses.service.js';
 
 @ApiTags('Courses')
 @Controller('api/courses')
