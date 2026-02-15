@@ -10,6 +10,7 @@ export class GetStudentByIdService {
   ) {}
 
   async getByIdNumber(id: string): Promise<Student> {
+    
     const student = await this.studentModel.findOne({
       where: { id_number: id },
     });

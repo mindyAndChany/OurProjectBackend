@@ -15,7 +15,7 @@ export class StudentsDataController {
     @Inject(GetAllStudentsDataService) private readonly service: GetAllStudentsDataService,
     @Inject(AddStudentService) private readonly addStudentService: AddStudentService,
     @Inject(UpdateStudentService) private readonly updateStudentService: UpdateStudentService,
-    @Inject(GetStudentByIdService) private readonly getStudentByIdService: GetStudentByIdService, // ← חדש
+    @Inject(GetStudentByIdService) private readonly getStudentByIdService: GetStudentByIdService, 
 
   ) {
    
@@ -52,6 +52,8 @@ export class StudentsDataController {
     if (cols.length === 0) throw new BadRequestException('no categories provided');
     return this.service.getStudentData(cols);
   }
+
+  
 @Get('getstudentById/:id')
 @ApiOperation({ summary: 'Get full student by id_number' })
 @ApiParam({ name: 'id', description: 'Student id_number' })
