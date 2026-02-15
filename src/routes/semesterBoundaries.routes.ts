@@ -4,10 +4,12 @@ import { getSemesterBoundariesHandler, getSemesterBoundaryByYearHandler, createS
 const router = Router();
 
 /**
- * @swagger
+ * @openapi
  * /api/semester-boundaries:
  *   get:
  *     summary: List semester boundaries
+ *     tags:
+ *       - Semester Boundaries
  *     responses:
  *       200:
  *         description: Boundaries
@@ -19,6 +21,8 @@ const router = Router();
  *                 $ref: '#/components/schemas/SemesterBoundary'
  *   post:
  *     summary: Create semester boundary
+ *     tags:
+ *       - Semester Boundaries
  *     requestBody:
  *       required: true
  *       content:
@@ -37,10 +41,12 @@ router.get('/', getSemesterBoundariesHandler);
 router.post('/', createSemesterBoundaryHandler);
 
 /**
- * @swagger
+ * @openapi
  * /api/semester-boundaries/{year}:
  *   get:
  *     summary: Get boundary by year
+ *     tags:
+ *       - Semester Boundaries
  *     parameters:
  *       - in: path
  *         name: year
@@ -56,6 +62,8 @@ router.post('/', createSemesterBoundaryHandler);
  *               $ref: '#/components/schemas/SemesterBoundary'
  *   put:
  *     summary: Update boundary by year
+ *     tags:
+ *       - Semester Boundaries
  *     parameters:
  *       - in: path
  *         name: year
@@ -73,6 +81,8 @@ router.post('/', createSemesterBoundaryHandler);
  *         description: Updated boundary
  *   delete:
  *     summary: Delete boundary by year
+ *     tags:
+ *       - Semester Boundaries
  *     parameters:
  *       - in: path
  *         name: year

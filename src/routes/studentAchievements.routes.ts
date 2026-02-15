@@ -4,10 +4,12 @@ import { getStudentAchievementsHandler, getStudentAchievementByIdHandler, create
 const router = Router();
 
 /**
- * @swagger
+ * @openapi
  * /api/student-achievements:
  *   get:
  *     summary: Get student achievements
+ *     tags:
+ *       - Student Achievements
  *     parameters:
  *       - in: query
  *         name: student_id
@@ -32,6 +34,8 @@ const router = Router();
  *                 $ref: '#/components/schemas/StudentAchievement'
  *   post:
  *     summary: Create a student achievement
+ *     tags:
+ *       - Student Achievements
  *     requestBody:
  *       required: true
  *       content:
@@ -50,10 +54,12 @@ router.get('/', getStudentAchievementsHandler);
 router.post('/', createStudentAchievementHandler);
 
 /**
- * @swagger
+ * @openapi
  * /api/student-achievements/{id}:
  *   get:
  *     summary: Get achievement by id
+ *     tags:
+ *       - Student Achievements
  *     parameters:
  *       - in: path
  *         name: id
@@ -69,6 +75,8 @@ router.post('/', createStudentAchievementHandler);
  *               $ref: '#/components/schemas/StudentAchievement'
  *   put:
  *     summary: Update achievement by id
+ *     tags:
+ *       - Student Achievements
  *     parameters:
  *       - in: path
  *         name: id
@@ -90,6 +98,8 @@ router.post('/', createStudentAchievementHandler);
  *               $ref: '#/components/schemas/StudentAchievement'
  *   delete:
  *     summary: Delete achievement by id
+ *     tags:
+ *       - Student Achievements
  *     parameters:
  *       - in: path
  *         name: id
