@@ -5,7 +5,6 @@ import setupSwagger from './swagger.js';
 import authRoutes from './routes/auth.routes.js';
 import studentRoutes from './routes/studentsData.routes.js';
 import { sequelize } from './store/db.js';
-import { DataTypes } from 'sequelize';
 import calendarRoutes from './routes/calendar.routes.js'; 
 import coursesRoutes from './routes/courses.routes.js';
 import classesRoutes from './routes/classes.routes.js';
@@ -16,6 +15,10 @@ import topicsRoutes from './routes/topics.routes.js';
 import studentAchievementsRoutes from './routes/studentAchievements.routes.js';
 import semesterBoundariesRoutes from './routes/semesterBoundaries.routes.js';
 import roomsRoutes from './routes/rooms.routes.js';
+import usersRoutes from './routes/users.routes.js';
+import rolesRoutes from './routes/roles.routes.js';
+import permissionsRoutes from './routes/permissions.routes.js';
+import rolePermissionsRoutes from './routes/rolePermissions.routes.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -50,6 +53,10 @@ app.use('/api/topics', topicsRoutes);
 app.use('/api/student-achievements', studentAchievementsRoutes);
 app.use('/api/semester-boundaries', semesterBoundariesRoutes);
 app.use('/api/rooms', roomsRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/roles', rolesRoutes);
+app.use('/api/permissions', permissionsRoutes);
+app.use('/api/role-permissions', rolePermissionsRoutes);
 
 // 📁 Static for uploaded files (when not using cloud storage)
 app.use('/uploads', express.static(path.resolve('uploads')));

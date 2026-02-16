@@ -50,6 +50,118 @@ const options = {
             can_edit: { type: 'boolean' },
           },
         },
+        PermissionFull: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            screen_name: { type: 'string' },
+            can_view: { type: 'boolean' },
+            can_edit: { type: 'boolean' },
+          },
+          required: ['id', 'screen_name', 'can_view', 'can_edit'],
+        },
+        PermissionCreateRequest: {
+          type: 'object',
+          properties: {
+            screen_name: { type: 'string' },
+            can_view: { type: 'boolean' },
+            can_edit: { type: 'boolean' },
+          },
+          required: ['screen_name', 'can_view', 'can_edit'],
+        },
+        PermissionUpdateRequest: {
+          type: 'object',
+          properties: {
+            screen_name: { type: 'string' },
+            can_view: { type: 'boolean' },
+            can_edit: { type: 'boolean' },
+          },
+        },
+        Role: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            name: { type: 'string' },
+          },
+          required: ['id', 'name'],
+        },
+        RoleCreateRequest: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+          },
+          required: ['name'],
+        },
+        RoleUpdateRequest: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+          },
+        },
+        User: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            name: { type: 'string' },
+            email: { type: 'string' },
+            password_hash: { type: 'string' },
+            institution_code: { type: 'string' },
+            role_id: { type: 'integer' },
+            created_at: { type: 'string', format: 'date-time' },
+            active: { type: 'boolean' },
+            role: { $ref: '#/components/schemas/Role' },
+          },
+          required: ['id', 'name', 'email', 'institution_code', 'role_id', 'active'],
+        },
+        UserCreateRequest: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            email: { type: 'string' },
+            password: { type: 'string' },
+            password_hash: { type: 'string' },
+            institution_code: { type: 'string' },
+            role_id: { type: 'integer' },
+            active: { type: 'boolean' },
+          },
+          required: ['name', 'email', 'institution_code', 'role_id'],
+        },
+        UserUpdateRequest: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            email: { type: 'string' },
+            password: { type: 'string' },
+            password_hash: { type: 'string' },
+            institution_code: { type: 'string' },
+            role_id: { type: 'integer' },
+            active: { type: 'boolean' },
+          },
+        },
+        RolePermission: {
+          type: 'object',
+          properties: {
+            role_id: { type: 'integer' },
+            permission_id: { type: 'integer' },
+            permission: { $ref: '#/components/schemas/PermissionFull' },
+          },
+          required: ['role_id', 'permission_id'],
+        },
+        RolePermissionCreateRequest: {
+          type: 'object',
+          properties: {
+            role_id: { type: 'integer' },
+            permission_id: { type: 'integer' },
+          },
+          required: ['role_id', 'permission_id'],
+        },
+        RolePermissionUpdateRequest: {
+          type: 'object',
+          properties: {
+            role_id: { type: 'integer' },
+            permission_id: { type: 'integer' },
+          },
+        },
         Student: {
           type: 'object',
           properties: {
