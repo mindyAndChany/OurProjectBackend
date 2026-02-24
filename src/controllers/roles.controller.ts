@@ -23,11 +23,28 @@ export const getRoleByIdHandler = async (req: Request, res: Response) => {
 
 export const addRoleHandler = async (req: Request, res: Response) => {
   try {
+    console.log('🔵 addRoleHandler - Received data:', JSON.stringify(req.body, null, 2));
+    
+    // ✅ בדיקה אם התפקיד כבר קיים לפני הניסיון ליצור
+    const existing = await getRoles();
+    console.log('📋 Existing roles:', existing.map(r => ({ id: r.id, name: r.name })));
+    
     const item = await addRole(req.body);
+    console.log('✅ Role created successfully:', item.toJSON());
     res.status(201).json(item);
   } catch (error: any) {
+    console.error('❌ addRoleHandler error:', {
+      name: error?.name,
+      message: error?.message,
+      errors: error?.errors,
+      fields: error?.fields,
+      original: error?.original?.message
+    });
     const status = error?.name === 'SequelizeUniqueConstraintError' ? 409 : 500;
-    res.status(status).json({ error: 'Failed to add role', details: error?.message });
+    const details = error?.name === 'SequelizeUniqueConstraintError' 
+      ? `תפקיד עם השם "${req.body?.name}" כבר קיים במערכת` 
+      : error?.message;
+    res.status(status).json({ error: 'Failed to add role', details });
   }
 };
 

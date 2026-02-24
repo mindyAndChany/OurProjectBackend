@@ -32,7 +32,11 @@ export const addRolePermissionHandler = async (req: Request, res: Response) => {
     const item = await addRolePermission(req.body);
     res.status(201).json(item);
   } catch (error: any) {
-    const status = error?.name === 'SequelizeUniqueConstraintError' ? 409 : 500;
+    const status = error?.name === 'SequelizeUniqueConstraintError'
+      ? 409
+      : error?.name === 'ValidationError'
+      ? 400
+      : 500;
     res.status(status).json({ error: 'Failed to add role permission', details: error?.message });
   }
 };
@@ -44,7 +48,11 @@ export const updateRolePermissionHandler = async (req: Request, res: Response) =
     if (!updated) return res.status(404).json({ error: 'Role permission not found' });
     res.json(updated);
   } catch (error: any) {
-    const status = error?.name === 'SequelizeUniqueConstraintError' ? 409 : 500;
+    const status = error?.name === 'SequelizeUniqueConstraintError'
+      ? 409
+      : error?.name === 'ValidationError'
+      ? 400
+      : 500;
     res.status(status).json({ error: 'Failed to update role permission', details: error?.message });
   }
 };

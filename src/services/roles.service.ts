@@ -15,7 +15,10 @@ export const getRoleById = async (id: number) => {
 };
 
 export const addRole = async (data: AddRoleInput) => {
-  return await Role.create(data as any);
+  // ✅ וידוא שרק name נשלח, מונע שליחת id או שדות אחרים
+  const roleData = { name: data.name };
+  console.log('🔵 Creating role with data:', roleData);
+  return await Role.create(roleData as any);
 };
 
 export const updateRoleById = async (id: number, data: UpdateRoleInput) => {

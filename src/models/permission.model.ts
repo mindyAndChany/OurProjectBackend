@@ -1,6 +1,10 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 
-@Table({ tableName: 'permissions', timestamps: false })
+@Table({
+  tableName: 'permissions',
+  timestamps: false,
+  indexes: [{ unique: true, fields: ['screen_name', 'can_view', 'can_edit'] }],
+})
 export class Permission extends Model {
   @PrimaryKey
   @AutoIncrement

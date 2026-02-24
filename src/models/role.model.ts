@@ -7,7 +7,7 @@ export class Role extends Model {
   @AutoIncrement
   @Column(DataType.INTEGER)
   id!: number;
-  @Column(DataType.STRING) name!: string;
+  @Column({ type: DataType.STRING, unique: true }) name!: string;
 
   @HasMany(() => RolePermission)
   rolePermissions!: RolePermission[];

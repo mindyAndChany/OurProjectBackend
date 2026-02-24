@@ -28,11 +28,20 @@ export const login = async (email: string, password: string) => {
     include: [Permission],
   });
 
-  const permissions = rolePermissions.map((rp) => ({
-    screen_name: rp.permission.screen_name,
-    can_view: rp.permission.can_view,
-    can_edit: rp.permission.can_edit,
-  }));
+  const permissionsByScreen = new Map<string, { screen_name: string; can_view: boolean; can_edit: boolean }>();
+
+  for (const rp of rolePermissions) {
+    const screenName = rp.permission.screen_name;
+    if (!permissionsByScreen.has(screenName)) {
+      permissionsByScreen.set(screenName, {
+        screen_name: screenName,
+        can_view: rp.permission.can_view,
+        can_edit: rp.permission.can_edit,
+      });
+    }
+  }
+
+  const permissions = Array.from(permissionsByScreen.values());
 
   return {
     id: user.id,
