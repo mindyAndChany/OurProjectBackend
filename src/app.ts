@@ -35,9 +35,8 @@ app.use(cors({
     'https://edulink-d65i.onrender.com',
     ' https://api.edulink.sgur.org.il'
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type']
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],}));
 
 app.get('/', (_req, res) => res.send('Hello, World!'));
 
