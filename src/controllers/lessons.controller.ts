@@ -28,9 +28,16 @@ const formatError = (error: unknown) => {
   return { name, message, details };
 };
 
-export const getLessonsHandler = async (_req: Request, res: Response) => {
+export const getLessonsHandler = async (req: Request, res: Response) => {
   try {
-    const items = await getLessons();
+    // allow filtering by query parameters: date (YYYY-MM-DD), start_time, end_time
+    const { date, start_time, end_time } = req.query;
+    const filters: any = {};
+    if (date !== undefined) filters.date = date as string;
+    if (start_time !== undefined) filters.start_time = String(start_time);
+    if (end_time !== undefined) filters.end_time = String(end_time);
+
+    const items = await getLessons(filters);
     res.json(items);
   } catch (error) {
     const formatted = formatError(error);

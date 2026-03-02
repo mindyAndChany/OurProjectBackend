@@ -1,6 +1,7 @@
 import { Lesson } from '../models/lesson.model.js';
 import { Topic } from '../models/topic.model.js';
 import { Room } from '../models/room.model.js';
+import { Op } from 'sequelize';
 
 type AddLessonInput = {
   class_id: number;
@@ -17,12 +18,38 @@ type AddLessonInput = {
 
 type UpdateLessonInput = Partial<AddLessonInput>;
 
-export const getLessons = async () => {
+export const getLessons = async (filters: {
+  date?: string | Date;
+  start_time?: string;
+  end_time?: string;
+} = {}) => {
+  // build a where clause based on provided filters
+  const where: any = {};
+
+  if (filters.date !== undefined && filters.date !== null) {
+    // normalize string dates to actual Date objects so Sequelize can compare
+    where.date = new Date(filters.date as string | Date);
+  }
+
+  // time filters are interpreted as inclusive bounds
+  if (filters.start_time && filters.end_time) {
+    where.start_time = { [Op.gte]: filters.start_time };
+    where.end_time = { [Op.lte]: filters.end_time };
+  } else {
+    if (filters.start_time) {
+      where.start_time = { [Op.gte]: filters.start_time };
+    }
+    if (filters.end_time) {
+      where.end_time = { [Op.lte]: filters.end_time };
+    }
+  }
+
   return await Lesson.findAll({
-  include: [
-    { model: Topic, as: 'topicRef', attributes: ['id', 'name'] },
-    { model: Room, as: 'roomRef', attributes: ['id', 'name', 'number'] },
-  ],
+    where,
+    include: [
+      { model: Topic, as: 'topicRef', attributes: ['id', 'name'] },
+      { model: Room, as: 'roomRef', attributes: ['id', 'name', 'number'] },
+    ],
   });
 };
 

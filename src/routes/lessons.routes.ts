@@ -5,9 +5,26 @@ import { getLessonsHandler, addLessonHandler, updateLessonHandler, deleteLessonH
  * @openapi
  * /api/lessons:
  *   get:
- *     summary: Get all lessons
+ *     summary: Get all lessons (optional filtering)
  *     tags:
  *       - Lessons
+ *     parameters:
+ *       - in: query
+ *         name: date
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter lessons on this date (YYYY-MM-DD)
+ *       - in: query
+ *         name: start_time
+ *         schema:
+ *           type: string
+ *         description: Minimum lesson start time (inclusive, e.g. "08:00")
+ *       - in: query
+ *         name: end_time
+ *         schema:
+ *           type: string
+ *         description: Maximum lesson end time (inclusive, e.g. "10:00")
  *     responses:
  *       200:
  *         description: List of lessons
