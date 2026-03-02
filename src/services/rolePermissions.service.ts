@@ -98,6 +98,16 @@ export const updateRolePermissionByKeys = async (
       throw makeValidationError('Current permission was not found');
     }
 
+    if (hasCanView && incomingCanView === false) {
+      await item.destroy();
+      return {
+        deleted: true,
+        id: item.id,
+        role_id: item.role_id,
+        permission_id: item.permission_id,
+      } as any;
+    }
+
     const targetCanView = hasCanView ? (incomingCanView as boolean) : currentPermission.can_view;
     const targetCanEdit = hasCanEdit ? (incomingCanEdit as boolean) : currentPermission.can_edit;
 
