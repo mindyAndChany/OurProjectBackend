@@ -55,5 +55,6 @@ await build({
     "cors","dotenv","express","knex","multer","nestjs-knex",
     "pg","reflect-metadata","sequelize","sequelize-typescript",
     "streamifier","swagger-jsdoc","swagger-ui-express",
+    "firebase-admin", "@google-cloud/storage", "@google-cloud/firestore",
   ],
 });
