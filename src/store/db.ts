@@ -25,6 +25,16 @@ function requireEnv(name: string): string {
   return value;
 }
 
+// האם להשתמש ב-SSL בחיבור למסד.
+// ברירת מחדל: true (בטוח יותר). כדי לבטל (למשל כשה-DB רץ על אותו שרת ללא TLS)
+// מגדירים ב-.env: DB_SSL=false
+// ערכים שמכבים: false / 0 / no / off  (ללא תלות ברישיות ורווחים).
+function isSslEnabled(): boolean {
+  const raw = (process.env.DB_SSL ?? '').trim().toLowerCase();
+  if (raw === '') return true; // ברירת מחדל – מוצפן
+  return !['false', '0', 'no', 'off'].includes(raw);
+}
+
 export const sequelize = new Sequelize({
   dialect: 'postgres',
   host: requireEnv('DB_HOST'),
@@ -35,12 +45,17 @@ export const sequelize = new Sequelize({
   models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson, Attendance, Topic, StudentAchievement, SemesterBoundary, StudentDocument, Room],
   // Enable query logging to help diagnose sync errors
   // logging: console.log,
-  logging:false,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  }
+  logging: false,
+  // מפעילים dialectOptions.ssl רק כשהדגל דלוק, כדי שחיבור ללא TLS לא ייכשל.
+  ...(isSslEnabled()
+    ? {
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
+      }
+    : {}),
 });
 
