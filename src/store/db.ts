@@ -16,13 +16,22 @@ import { SemesterBoundary } from '../models/semester_boundary.model.js';
 import { StudentDocument } from '../models/student_document.model.js';
 import { Room } from '../models/room.model.js';
 
+// מחזיר משתנה סביבה חובה; אם חסר – זורק שגיאה ברורה בזמן עליית השרת.
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`❌ חסר משתנה סביבה חובה: ${name}`);
+  }
+  return value;
+}
+
 export const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: 'dpg-d4mmvfodl3ps73e7nt10-a.oregon-postgres.render.com',
-  port: 5432,
-  username: 'admin',
-  password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
-  database: 'edulinkdb',
+  host: requireEnv('DB_HOST'),
+  port: Number(process.env.DB_PORT) || 5432,
+  username: requireEnv('DB_USER'),
+  password: requireEnv('DB_PASS'),
+  database: requireEnv('DB_NAME'),
   models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson, Attendance, Topic, StudentAchievement, SemesterBoundary, StudentDocument, Room],
   // Enable query logging to help diagnose sync errors
   // logging: console.log,
