@@ -16,22 +16,46 @@ import { SemesterBoundary } from '../models/semester_boundary.model.js';
 import { StudentDocument } from '../models/student_document.model.js';
 import { Room } from '../models/room.model.js';
 
+// מחזיר משתנה סביבה חובה; אם חסר – זורק שגיאה ברורה בזמן עליית השרת.
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`❌ חסר משתנה סביבה חובה: ${name}`);
+  }
+  return value;
+}
+
+// האם להשתמש ב-SSL בחיבור למסד.
+// ברירת מחדל: true (בטוח יותר). כדי לבטל (למשל כשה-DB רץ על אותו שרת ללא TLS)
+// מגדירים ב-.env: DB_SSL=false
+// ערכים שמכבים: false / 0 / no / off  (ללא תלות ברישיות ורווחים).
+function isSslEnabled(): boolean {
+  const raw = (process.env.DB_SSL ?? '').trim().toLowerCase();
+  if (raw === '') return true; // ברירת מחדל – מוצפן
+  return !['false', '0', 'no', 'off'].includes(raw);
+}
+
 export const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: 'dpg-d4mmvfodl3ps73e7nt10-a.oregon-postgres.render.com',
-  port: 5432,
-  username: 'admin',
-  password: '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
-  database: 'edulinkdb',
+  host: requireEnv('DB_HOST'),
+  port: Number(process.env.DB_PORT) || 5432,
+  username: requireEnv('DB_USER'),
+  password: requireEnv('DB_PASS'),
+  database: requireEnv('DB_NAME'),
   models: [User, Role, Permission, RolePermission, Student, CalendarEvent, Course, ClassModel, WeeklySchedule, Lesson, Attendance, Topic, StudentAchievement, SemesterBoundary, StudentDocument, Room],
   // Enable query logging to help diagnose sync errors
   // logging: console.log,
-  logging:false,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  }
+  logging: false,
+  // מפעילים dialectOptions.ssl רק כשהדגל דלוק, כדי שחיבור ללא TLS לא ייכשל.
+  ...(isSslEnabled()
+    ? {
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
+      }
+    : {}),
 });
 

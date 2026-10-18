@@ -11,6 +11,17 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// התחברות אחרי אימות Firebase (Google / Email) — המשתמש חייב להתקיים במערכת
+export const firebaseLogin = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const userData = await authService.firebaseLogin(email);
+    res.json(userData);
+  } catch (err: any) {
+    res.status(401).json({ error: err.message });
+  }
+};
+
 // NestJS version (not used when running Express)
 // import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 // import { AuthService } from '../services/auth.service.js';

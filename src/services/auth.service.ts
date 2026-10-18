@@ -51,3 +51,48 @@ export const login = async (email: string, password: string) => {
     permissions,
   };
 };
+
+/**
+ * התחברות אחרי אימות Firebase (Google / Email).
+ * מחפש משתמש קיים לפי המייל. אם המשתמש לא קיים במסד הנתונים – דוחה את הבקשה.
+ */
+export const firebaseLogin = async (email: string) => {
+  if (!email) {
+    throw new Error('Email is required');
+  }
+
+  const user = await User.findOne({
+    where: { email, active: true },
+    include: [Role],
+  });
+
+  if (!user) {
+    throw new Error('User not found in the system');
+  }
+
+  const rolePermissions = await RolePermission.findAll({
+    where: { role_id: user.role_id },
+    include: [Permission],
+  });
+
+  const permissionsByScreen = new Map<string, { screen_name: string; can_view: boolean; can_edit: boolean }>();
+
+  for (const rp of rolePermissions) {
+    const screenName = rp.permission.screen_name;
+    permissionsByScreen.set(screenName, {
+      screen_name: screenName,
+      can_view: rp.permission.can_view,
+      can_edit: rp.permission.can_edit,
+    });
+  }
+
+  const permissions = Array.from(permissionsByScreen.values());
+
+  return {
+    id: user.id,
+    name: user.name,
+    institution_code: user.institution_code,
+    role: user.role.name,
+    permissions,
+  };
+};

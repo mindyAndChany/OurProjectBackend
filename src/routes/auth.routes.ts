@@ -32,4 +32,6 @@ const router = express.Router();
  */
 router.post('/logIn', authController.login);
 
+router.post('/firebase-login', authController.firebaseLogin);
+
 export default router;

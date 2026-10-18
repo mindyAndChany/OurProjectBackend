@@ -1,3 +1,5 @@
+// ⚠️ חייב להיות ראשון: טוען את משתני הסביבה מ-.env לפני כל שאר המודולים.
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import cors from 'cors';
