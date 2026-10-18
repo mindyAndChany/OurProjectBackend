@@ -8,6 +8,16 @@ import { ClassModel } from './models/class.model.js';
 import { WeeklySchedule } from './models/weekly_schedule.model.js';
 import { Lesson } from './models/lesson.model.js';
 import { Room } from './models/room.model.js';
+import { Topic } from './models/topic.model.js';
+import { Attendance } from './models/attendance.model.js';
+import { StudentAchievement } from './models/student_achievement.model.js';
+import { SemesterBoundary } from './models/semester_boundary.model.js';
+import { StudentDocument } from './models/student_document.model.js';
+import { CalendarEvent } from './models/calendar_event.model.js';
+import { User } from './models/user.model.js';
+import { Role } from './models/role.model.js';
+import { Permission } from './models/permission.model.js';
+import { RolePermission } from './models/rolePermission.model.js';
 import { CoursesModule } from './modules/courses.module.js';
 import { ClassesModule } from './modules/classes.module.js';
 import { WeeklySchedulesModule } from './modules/weeklySchedules.module.js';
@@ -23,7 +33,14 @@ import { LessonsModule } from './modules/lessons.module.js';
       username: process.env.DB_USER || 'admin',
       password: process.env.DB_PASS || '5csuDYohl7PnmyKhj7hGmavdYhzDbp5d',
       database: process.env.DB_NAME || 'edulinkdb',
-      models: [Student, Course, ClassModel, WeeklySchedule, Lesson, Room],
+      models: [
+        Student, Course, ClassModel, WeeklySchedule, Lesson, Room,
+        // חובה לרשום את כל המודלים שמשתתפים ביחסים — גם אם הם לא בשימוש
+        // ישיר ב-Nest. אחרת Sequelize זורק "X has not been defined"
+        // בזמן addModels (למשל Topic דרך Lesson/Course/WeeklySchedule).
+        Topic, CalendarEvent, Attendance, StudentAchievement,
+        SemesterBoundary, StudentDocument, User, Role, Permission, RolePermission,
+      ],
       autoLoadModels: true,
       synchronize: false,
       dialectOptions: { ssl: { require: true, rejectUnauthorized: false } },

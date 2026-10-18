@@ -1,7 +1,10 @@
 import bcrypt from 'bcrypt';
 import { User } from '../models/user.model.js';
 import { Role } from '../models/role.model.js';
-import { getFirebaseAuth } from '../config/firebaseAdmin.js';
+// firebase-admin מסומן כ-"external" ב-esbuild, ואם החבילה חסרה ב-node_modules
+// ייבוא סטטי של מודול שמתייחס אליה מפיל את כל השרת בעלייה. לכן המודול שלנו
+// עצמו נטען רק כאן, בזמן שימוש, ולא בהפעלת האפליקציה.
+
 
 export type AddUserInput = {
   name: string;
@@ -36,7 +39,15 @@ export const getUserById = async (id: number) => {
  * (במקום להיכשל). אם Firebase Admin לא מוגדר – מדלג בשקט.
  */
 async function createFirebaseUser(email: string, password: string): Promise<string | undefined> {
-  const fb = getFirebaseAuth();
+  let getFirebaseAuth: typeof import('../config/firebaseAdmin.js').getFirebaseAuth;
+  try {
+    ({ getFirebaseAuth } = await import('../config/firebaseAdmin.js'));
+  } catch (err: any) {
+    console.warn('⚠️ Firebase Admin לא זמין:', err?.message);
+    return undefined;
+  }
+
+  const fb = await getFirebaseAuth();
   if (!fb) return undefined;
 
   try {

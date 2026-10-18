@@ -1,8 +1,6 @@
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { initializeApp, cert, App, getApps } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
 
 /**
  * מודול אתחול של Firebase Admin SDK בשרת.
@@ -10,6 +8,10 @@ import { getAuth } from 'firebase-admin/auth';
  *
  * אם לא נמצא קובץ credentials – מחזיר null בלי לשבור את השרת,
  * כך שמערכת המשתמשים ממשיכה לעבוד (רק ללא יצירת משתמשים בפיירבס).
+ *
+ * החבילה `firebase-admin` נטענת **דינמית** ולא בסטטיים בראש הקובץ:
+ * היא מסומנת כ-external ב-esbuild, ואם היא חסרה ב-node_modules ייבוא סטטי
+ * מפיל את כל השרת בעלייה (ERR_MODULE_NOT_FOUND), גם כשלא משתמשים במשתמשים.
  */
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -22,17 +24,46 @@ function findServiceAccountFile(): string | null {
   return found ? path.join(configDir, found) : null;
 }
 
-let app: App | null = null;
+// טיפוסים מקומיים: מאפשרים קומפילציה גם כש-firebase-admin לא מותקן.
+type FirebaseAdminApp = unknown;
+export type FirebaseAuthLike = {
+  createUser(props: { email: string; password: string }): Promise<{ uid: string }>;
+  getUserByEmail(email: string): Promise<{ uid: string }>;
+};
 
-export function getFirebaseAdmin(): App | null {
-  if (app) return app;
+let app: FirebaseAdminApp | null = null;
+let sdk: {
+  initializeApp: (options: any) => FirebaseAdminApp;
+  cert: (serviceAccount: any) => any;
+  getApps: () => FirebaseAdminApp[];
+  getAuth: (app: FirebaseAdminApp) => FirebaseAuthLike;
+} | null = null;
+let sdkLoadFailed = false;
 
-  // אם כבר אותחל אפ (למשל ע"י מודול אחר)
-  const existing = getApps();
-  if (existing.length > 0) {
-    app = existing[0] ?? null;
-    return app;
+async function loadSdk() {
+  if (sdk) return sdk;
+  if (sdkLoadFailed) return null;
+  try {
+    const [appMod, authMod] = await Promise.all([
+      import('firebase-admin/app'),
+      import('firebase-admin/auth'),
+    ]);
+    sdk = {
+      initializeApp: appMod.initializeApp,
+      cert: appMod.cert,
+      getApps: appMod.getApps,
+      getAuth: authMod.getAuth as unknown as (a: FirebaseAdminApp) => FirebaseAuthLike,
+    };
+    return sdk;
+  } catch (err: any) {
+    sdkLoadFailed = true;
+    console.warn('⚠️ Firebase Admin: החבילה firebase-admin אינה זמינה:', err?.message);
+    return null;
   }
+}
+
+export async function getFirebaseAdmin(): Promise<FirebaseAdminApp | null> {
+  if (app) return app;
 
   const serviceAccountPath = findServiceAccountFile();
   if (!serviceAccountPath) {
@@ -40,10 +71,20 @@ export function getFirebaseAdmin(): App | null {
     return null;
   }
 
+  const sdkModule = await loadSdk();
+  if (!sdkModule) return null;
+
+  // אם כבר אותחל אפ (למשל ע"י מודול אחר)
+  const existing = sdkModule.getApps();
+  if (existing.length > 0) {
+    app = existing[0] ?? null;
+    return app;
+  }
+
   try {
     const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
-    app = initializeApp({
-      credential: cert({
+    app = sdkModule.initializeApp({
+      credential: sdkModule.cert({
         projectId: serviceAccount.project_id,
         clientEmail: serviceAccount.client_email,
         privateKey: serviceAccount.private_key,
@@ -58,8 +99,8 @@ export function getFirebaseAdmin(): App | null {
   return app;
 }
 
-export function getFirebaseAuth() {
-  const fb = getFirebaseAdmin();
-  if (!fb) return null;
-  return getAuth(fb);
+export async function getFirebaseAuth(): Promise<FirebaseAuthLike | null> {
+  const fb = await getFirebaseAdmin();
+  if (!fb || !sdk) return null;
+  return sdk.getAuth(fb);
 }
