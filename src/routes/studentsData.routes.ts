@@ -170,22 +170,46 @@ router.get('/getstudentById/:id', async (req, res) => {
  */
 router.post('/addStudents', async (req, res) => {
   try {
-    console.log("start router");
-    
     const students = req.body;
     if (!Array.isArray(students) || students.length === 0) {
       return res.status(400).json({ error: 'Request body must be a non-empty array' });
     }
 
-    const results = [];
-    for (const student of students) {
-      const added = await addStudentService.addStudent(student);
-      results.push(added);
+    // ייבוא עמיד: שורה כושלת נרשמת ב-failures ולא מפילה את כל הייבוא
+    const results: any[] = [];
+    const failures: { index: number; id_number?: string | undefined; name: string; reason: string }[] = [];
+
+    for (let i = 0; i < students.length; i++) {
+      const s = students[i] ?? {};
+      try {
+        const added = await addStudentService.addStudent(s);
+        results.push(added);
+      } catch (err: any) {
+        const errorName = err?.name;
+        // שגיאות DB לא-צפויות נרשמות ללוג המלא
+        if (errorName !== 'BadRequestException' && errorName !== 'ConflictException') {
+          console.error(`addStudents row ${i + 1} failed:`, {
+            name: errorName,
+            message: err?.message,
+            detail: err?.parent?.detail,
+            constraint: err?.parent?.constraint,
+          });
+        }
+
+        failures.push({
+          index: i + 1,
+          id_number: s.id_number ? String(s.id_number) : undefined,
+          name: [s.first_name, s.last_name].filter(Boolean).join(' '),
+          reason: err?.message ?? String(err),
+        });
+      }
     }
 
-    res.status(201).json(results);
-  } catch (err) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(201).json({ added: results, failures });
+  } catch (err: any) {
+    console.error('addStudents error:', err?.name, err?.message, err?.parent?.detail, err?.parent?.constraint);
+    const status = err?.status ?? err?.statusCode ?? 500;
+    res.status(status).json({ error: err?.message || 'Internal server error' });
   }
 });
 

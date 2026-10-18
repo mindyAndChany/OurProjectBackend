@@ -1,6 +1,42 @@
 import { Injectable, BadRequestException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { Student } from '../models/student.model.js';
+import { ClassModel } from '../models/class.model.js';
+
+/**
+ * המרת ערך תאריך ל-Date. תומך גם בפורמט ישראלי dd/mm/yyyy ו-dd.mm.yyyy,
+ * מפני ש-`new Date` מפרש נכון רק את הראשון.
+ */
+function toDate(value: any): Date | null {
+  if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
+
+  const raw = String(value).trim();
+  if (raw === '') return null;
+
+  // dd/mm/yyyy או dd.mm.yyyy (או dd-mm-yyyy)
+  const match = raw.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})$/);
+  if (match) {
+    const [, d, m, y] = match as [string, string, string, string];
+    const year = y.length === 2 ? Number(y) + 2000 : Number(y);
+    const date = new Date(year, Number(m) - 1, Number(d));
+    // בדיקת תקינות: Date מתגלגל על תאריך לא קיים (כגון 31/02)
+    if (date.getFullYear() === year && date.getMonth() === Number(m) - 1 && date.getDate() === Number(d)) {
+      return date;
+    }
+    return null;
+  }
+
+  // תאריכים שמייצגים מספר סריאלי של אקסל (למשל 45292)
+  if (/^\d{5}$/.test(raw)) {
+    const excelEpoch = Date.UTC(1899, 11, 30);
+    const date = new Date(excelEpoch + Number(raw) * 86400000);
+    return isNaN(date.getTime()) ? null : date;
+  }
+
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? null : d;
+}
 
 @Injectable()
 export class AddStudentService {
@@ -25,7 +61,11 @@ export class AddStudentService {
 
     for (const key of this.allowedFields) {
       if (key in input) {
-        data[key] = input[key];
+        const value = input[key];
+        data[key] = typeof value === 'string'
+          // הסרת תווי כיווניות נסתרים (LRM/RLM/embedding) ורווחים מיותרים
+          ? value.replace(/[‎‏‪-‮]/g, '').trim()
+          : value;
       }
     }
 
@@ -34,9 +74,12 @@ export class AddStudentService {
       if (val === undefined || val === null) return val;
       if (typeof val === 'boolean') return val;
       const s = String(val).trim().toLowerCase();
-      if (['true','t','1','yes','y','x'].includes(s)) return true;
-      if (['false','f','0','no','n',''].includes(s)) return false;
-      return val;
+      if (['true','t','1','yes','y','x','כן'].includes(s)) return true;
+      if (['false','f','0','no','n','','לא'].includes(s)) return false;
+      // ערך לא-מזוהה: זורקים שגיאה ברורה במקום להפיל את ה-INSERT על Type BOOLEAN
+      throw new BadRequestException(
+        `ערך לא תקין בשדה בוליאני: "${val}" (יש להשתמש בכן/לא או true/false)`,
+      );
     };
 
     // Coerce numeric-like fields; drop them if invalid to prevent "invalid input syntax" DB errors
@@ -71,11 +114,11 @@ export class AddStudentService {
       if (f in data) data[f] = booleanMap(data[f]);
     }
 
-    // Date fields normalization: remove if invalid
+    // Date fields normalization: convert to Date, or drop (with a warning) if invalid
     for (const f of ['birthdate_gregorian', 'married_date']) {
-      if (f in data) {
-        const d = new Date(data[f]);
-        if (isNaN(d.getTime())) {
+      if (f in data && data[f] !== '' && data[f] !== null) {
+        const d = toDate(data[f]);
+        if (!d) {
           delete data[f];
           console.warn(`Dropped field ${f} due to invalid date:`, data[f]);
         } else {
@@ -86,6 +129,27 @@ export class AddStudentService {
 
     if (!data.first_name || !data.last_name) {
       throw new BadRequestException('Missing required fields: first_name or last_name');
+    }
+
+    // ולידציה של מפתחות זרים: הכיתה/התמחות חייבת להתקיים בטבלת classes
+    const fkFields = ['class_kodesh', 'track', 'track2', 'track3'] as const;
+    const presentFkValues = fkFields
+      .map((f) => data[f])
+      .filter((v): v is string => typeof v === 'string' && v !== '');
+
+    if (presentFkValues.length > 0) {
+      const existing = await ClassModel.findAll({
+        where: { name: { [Op.in]: presentFkValues } },
+        attributes: ['name'],
+        raw: true,
+      });
+      const known = new Set(existing.map((c: any) => c.name));
+      const missing = presentFkValues.filter((v) => !known.has(v));
+      if (missing.length > 0) {
+        throw new BadRequestException(
+          `כיתה/התמחות לא קיימת במערכת: ${[...new Set(missing)].join(', ')}`,
+        );
+      }
     }
 
     // If id_number provided, ensure it is unique before attempting insert to give a friendly error
@@ -101,9 +165,34 @@ export class AddStudentService {
       const created = await this.studentModel.create(data);
       console.log("student added", data.last_name);
       return created.get({ plain: true });
-    } catch (err:any) {
-      console.error('Failed to create student:', err);
-      throw new BadRequestException('Failed to create student: ' + (err?.message || err));
+    } catch (err: any) {
+      // שגיאות שהועלו במכוון (למשל כפילות ת.ז) מועברות כמו שהן
+      if (err instanceof ConflictException || err instanceof BadRequestException) {
+        throw err;
+      }
+
+      console.error('Failed to create student:', {
+        name: err?.name,
+        message: err?.message,
+        detail: err?.parent?.detail,
+        constraint: err?.parent?.constraint,
+        id_number: data.id_number,
+      });
+
+      // הודעת שגיאה קריאה למשתמשת, בלי ה-SQL הארוך
+      const name = err?.name ?? '';
+      let message = err?.message || String(err);
+
+      if (name === 'SequelizeValidationError' || name === 'ValidationError') {
+        const paths = (err?.errors || []).map((e: any) => e?.path).filter(Boolean);
+        message = `ערך לא תקין בשדות: ${[...new Set(paths)].join(', ') || message}`;
+      } else if (name === 'SequelizeForeignKeyConstraintError' || name === 'ForeignKeyConstraintError') {
+        message = 'אחד מהשדות (כיתה/התמחות/קשר) אינו קיים במערכת';
+      } else if (name === 'SequelizeUniqueConstraintError' || name === 'UniqueConstraintError') {
+        message = 'רשומה כפולה — ייתכן שמספר הזהות כבר קיים';
+      }
+
+      throw new BadRequestException(`Failed to create student: ${message}`);
     }
   }
 }
