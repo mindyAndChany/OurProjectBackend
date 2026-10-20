@@ -170,8 +170,6 @@ router.get('/getstudentById/:id', async (req, res) => {
  */
 router.post('/addStudents', async (req, res) => {
   try {
-    console.log("start router");
-    
     const students = req.body;
     if (!Array.isArray(students) || students.length === 0) {
       return res.status(400).json({ error: 'Request body must be a non-empty array' });
