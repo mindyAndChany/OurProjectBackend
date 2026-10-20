@@ -10,7 +10,7 @@ export class AddStudentService {
   ) {}
 
   private allowedFields = [
-    'id_number', 'paid_amount', 'payment_status', 'serial_number', 'class_kodesh', 'is_graduate',
+    'id_number', 'registration_year', 'paid_amount', 'payment_status', 'serial_number', 'class_kodesh', 'is_graduate',
     'last_name', 'first_name', 'nickname', 'birthdate_hebrew', 'birthdate_gregorian', 'address',
     'zipcode', 'father_name_he', 'father_mobile_he', 'mother_name_he','mother_mobile_he',
     'track', 'track2', 'track3', 'marital_status', 'class_teaching', 'bookshelf', 'notes',
