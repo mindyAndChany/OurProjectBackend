@@ -184,8 +184,14 @@ router.post('/addStudents', async (req, res) => {
     }
 
     res.status(201).json(results);
-  } catch (err) {
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (err: any) {
+    console.error('addStudents error:', err);
+
+    // העברת סטטוס והודעה מהסרביס (לדוגמה 409 על ת.ז. כפולה, 400 על שדות חסרים)
+    // כדי שהפרונט יוכל להציג הודעת שגיאה ברורה במקום "Internal server error".
+    const status = (err && (err.status ?? err.statusCode)) || 400;
+    const message = (err && (err.message || (err.response && err.response.message) || String(err))) || 'Internal server error';
+    return res.status(status >= 400 && status < 600 ? status : 400).json({ error: message });
   }
 });
 
