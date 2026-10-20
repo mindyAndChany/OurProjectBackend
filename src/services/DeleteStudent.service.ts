@@ -62,6 +62,33 @@ export class DeleteStudentService {
     }
   }
 
+  // מחיקה מרובה. כל תלמידה נמחקת בטרנזקציה נפרדת (deleteByIdNumber), כך שתלמידה
+  // שלא נמצאה לא מפילה את כל הבקשה — היא מדווחת ב-failed כדי שהפרונט יציג אותה.
+  async deleteByIdNumbers(idNumbers: string[]) {
+    if (!Array.isArray(idNumbers) || idNumbers.length === 0) {
+      throw new BadRequestException('id_numbers array required');
+    }
+    // ניקוי כפילויות וריקים
+    const unique = [...new Set(idNumbers.map((v) => String(v ?? '').trim()).filter(Boolean))];
+    if (unique.length === 0) throw new BadRequestException('id_numbers array required');
+
+    const deleted: any[] = [];
+    const failed: { id_number: string; error: string }[] = [];
+
+    for (const idNumber of unique) {
+      try {
+        deleted.push(await this.deleteByIdNumber(idNumber));
+      } catch (err: any) {
+        failed.push({
+          id_number: idNumber,
+          error: err?.message || 'Failed to delete student',
+        });
+      }
+    }
+
+    return { deleted, failed, deletedCount: deleted.length, failedCount: failed.length };
+  }
+
   // מחזיר רק את הטבלאות שאכן קיימות בסביבה הנוכחית, כדי לא להפיל מחיקה בגלל טבלה חסרה
   private async existingTables(names: string[]): Promise<string[]> {
     const found = await this.studentModel.sequelize!.getQueryInterface().showAllTables();

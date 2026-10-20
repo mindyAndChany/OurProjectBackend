@@ -288,6 +288,43 @@ router.delete('/deleteStudent/:id', async (req, res) => {
 
 /**
  * @openapi
+ * /api/studentsData/deleteStudents:
+ *   post:
+ *     summary: Delete multiple students by id_number (each in its own transaction)
+ *     tags:
+ *       - Students
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id_numbers:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Per-student delete results
+ *       400:
+ *         description: Invalid request
+ */
+router.post('/deleteStudents', async (req, res) => {
+  try {
+    const idNumbers = req.body?.id_numbers ?? req.body?.idNumbers;
+    const result = await deleteStudentService.deleteByIdNumbers(idNumbers);
+    res.json(result);
+  } catch (err: any) {
+    console.error('Error in deleteStudents route:', err);
+    const status = (err && (err.status ?? err.statusCode)) || 400;
+    const message = (err && (err.message || (err.response && err.response.message) || String(err))) || 'Internal server error';
+    return res.status(status >= 400 && status < 600 ? status : 400).json({ error: message });
+  }
+});
+
+/**
+ * @openapi
  * /api/studentsData/uploadFiles/{id}:
  *   post:
  *     summary: Upload student's photo and documents
