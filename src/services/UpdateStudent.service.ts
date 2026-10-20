@@ -1,6 +1,52 @@
 import { Injectable, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Student } from '../models/student.model.js';
+import { ClassModel } from '../models/class.model.js';
+
+/** נרמול לצורך השוואה: בלי ניקוד, גרשיים, פיסוק ורווחים מיותרים, אותיות קטנות. */
+function normalizeName(value: string): string {
+  return String(value)
+    .normalize('NFKD')
+    .replace(/[֑-ׇ]/g, '')
+    .replace(/["'`׳״’‘]/g, '')
+    .replace(/[.,;:\-–—_/\\()]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+/** האם השם נראה כמו כיתה קודש (כולל ספרה, לדוגמה "ז׳1") ולא כמו התמחות? */
+function isClassLikeName(value: string): boolean {
+  const s = String(value).trim();
+  return /[0-9]/.test(s) || /^[א-ת]["׳״']?[א-ת]$/.test(s);
+}
+
+/** חיפוש לפי מילת מפתח בין שמות קיימים; מחזיר מועמד יחיד או רשימת מועמדים סתומה. */
+function keywordMatches(requested: string, pool: string[]): string[] {
+  const q = normalizeName(requested);
+  if (!q) return [];
+  const qTokens = q.split(' ').filter((t) => t.length > 1);
+  if (qTokens.length === 0 && q.length < 2) return [];
+
+  const scored = pool.map((name) => {
+    const n = normalizeName(name);
+    let score = 0;
+    if (n === q) score = 100;
+    else if (n.includes(q)) score = 90 - (n.length - q.length) * 0.1;
+    else if (q.includes(n)) score = 80;
+    else {
+      const nTokens = n.split(' ');
+      const common = qTokens.filter((t) => nTokens.some((nt) => nt.includes(t) || t.includes(nt)));
+      if (common.length > 0) score = 40 + common.length * 10 - nTokens.length;
+    }
+    return { name, score };
+  });
+  const best = scored.filter((s) => s.score > 0).sort((a, b) => b.score - a.score);
+  if (best.length === 0) return [];
+  const bestScore = best[0]?.score ?? 0;
+  const top = best.filter((s) => s.score >= bestScore - 15);
+  return top.length === 1 ? [top[0]!.name] : top.slice(0, 5).map((s) => s.name);
+}
 
 @Injectable()
 export class UpdateStudentService {
@@ -81,6 +127,39 @@ export class UpdateStudentService {
         } else {
           data[f] = d;
         }
+      }
+    }
+
+    // מפתחות זרים (classes.name): התאמה מדויקת, ואם אין — השלמה לפי מילת מפתח
+    const fkFields = ['class_kodesh', 'track', 'track2', 'track3'];
+    const requestedFk = fkFields.filter((f) => typeof data[f] === 'string' && data[f] !== '');
+    if (requestedFk.length > 0) {
+      const classes = await ClassModel.findAll({ attributes: ['name'], raw: true });
+      const knownNames: string[] = classes.map((c: any) => String(c.name)).filter(Boolean);
+      const knownByNorm = new Map(knownNames.map((n) => [normalizeName(n), n]));
+      const missing: string[] = [];
+
+      for (const f of requestedFk) {
+        const value = data[f] as string;
+        const exact = knownByNorm.get(normalizeName(value));
+        if (exact) {
+          data[f] = exact;
+          continue;
+        }
+        const sameKind = knownNames.filter((n) => isClassLikeName(n) === isClassLikeName(value));
+        const candidates = keywordMatches(value, sameKind.length > 0 ? sameKind : knownNames);
+        if (candidates.length === 1) {
+          console.warn(`FK value "${value}" (${f}) matched to "${candidates[0]}" on update`);
+          data[f] = candidates[0];
+        } else {
+          missing.push(candidates.length > 1
+            ? `${value} (אפשרויות: ${candidates.join(', ')})`
+            : value);
+        }
+      }
+
+      if (missing.length > 0) {
+        throw new BadRequestException(`כיתה/התמחות לא קיימת במערכת: ${missing.join(', ')}`);
       }
     }
 
