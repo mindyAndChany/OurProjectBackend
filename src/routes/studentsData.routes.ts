@@ -5,6 +5,7 @@ import path from 'path';
 import { GetAllStudentsDataService } from '../services/getAllStudentsData.service.js';
 import { AddStudentService } from '../services/AddStudent.service.js';
 import { UpdateStudentService } from '../services/UpdateStudent.service.js';
+import { DeleteStudentService } from '../services/DeleteStudent.service.js';
 import { Student } from '../models/student.model.js';
 import { StudentDocument } from '../models/student_document.model.js';
 
@@ -19,6 +20,7 @@ const router = express.Router();
 const studentService = new GetAllStudentsDataService(Student);
 const addStudentService = new AddStudentService(Student);
 const updateStudentService = new UpdateStudentService(Student);
+const deleteStudentService = new DeleteStudentService(Student, StudentDocument);
 const getStudentByIdService = new GetStudentByIdService(Student);
 const fileUploadService = new FileUploadService();
 
@@ -247,6 +249,39 @@ router.put('/updateStudent/:id', async (req, res) => {
     const message = (err && (err.message || (err.response && err.response.message) || String(err))) || 'Internal server error';
     if (status === 404) return res.status(404).json({ error: message });
     if (status === 409) return res.status(409).json({ error: message });
+    return res.status(status >= 400 && status < 600 ? status : 400).json({ error: message });
+  }
+});
+
+/**
+ * @openapi
+ * /api/studentsData/deleteStudent/{id}:
+ *   delete:
+ *     summary: Delete a student by id_number (with documents, attendance and achievements)
+ *     tags:
+ *       - Students
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Student id_number
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Student deleted
+ *       404:
+ *         description: Student not found
+ */
+router.delete('/deleteStudent/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await deleteStudentService.deleteByIdNumber(id);
+    res.json(result);
+  } catch (err: any) {
+    console.error('Error in deleteStudent route for id:', req.params?.id, err);
+    const status = (err && (err.status ?? err.statusCode)) || 400;
+    const message = (err && (err.message || (err.response && err.response.message) || String(err))) || 'Internal server error';
     return res.status(status >= 400 && status < 600 ? status : 400).json({ error: message });
   }
 });
